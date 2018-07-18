@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Ball : MonoBehaviour {
 
@@ -18,10 +19,14 @@ public class Ball : MonoBehaviour {
 
     private float timeThrown;
     // TODO: Figure out a better way to determine this time
-    private const float throwTimeout = 0.5f;
+    private float throwTimeout = 0.5f;
 
     private Rigidbody2D rigidbody2D;
     private Vector3 initialScale;
+
+    public PlayerStat lastThrownBy;
+
+    private const float MAX_BALL_AIRTIME = 1.5f;
 
     private void Awake()
     {
@@ -36,16 +41,45 @@ public class Ball : MonoBehaviour {
         {
             if(Time.time > (timeThrown + throwTimeout))
             {
-                currentBallState = BallState.Idle;
+                SetToIdle();
+            }
+            else
+            {
+                SetBallColor((Time.time - timeThrown) / throwTimeout);
             }
         }
 
         if(transform.localScale != initialScale && currentBallState != BallState.Carry) transform.localScale = initialScale;
     }
 
-    public void Throw(float power, Vector2 directon)
+    private void SetBallColor(float progress)
     {
+        Color c = new Color(progress, progress, progress);
+        GetComponent<SpriteRenderer>().color = c;
+    }
+
+    public void SetToIdle()
+    {
+        currentBallState = BallState.Idle;
+        GetComponent<SpriteRenderer>().color = Color.white;
+        lastThrownBy = null;
+    }
+
+    public void Drop()
+    {
+        rigidbody2D.isKinematic = false;
+        rigidbody2D.simulated = true;
+        transform.SetParent(null);
+        rigidbody2D.velocity = Vector2.zero;
+        currentBallState = Ball.BallState.Idle;
+    }
+
+    public void Throw(float power, float max, Vector2 directon, PlayerStat by)
+    {
+        lastThrownBy = by;
+
         timeThrown = Time.time;
+        throwTimeout = (power / max) * MAX_BALL_AIRTIME;
 
         rigidbody2D.isKinematic = false;
         rigidbody2D.simulated = true;
@@ -69,14 +103,26 @@ public class Ball : MonoBehaviour {
 
         if (playerHit != null)
         {
-            if(currentBallState == BallState.Idle)
+            if (currentBallState == BallState.Thrown)
             {
-                playerHit.PickupBall(this);
+                // playerHit is hit by the thrown ball (they are out if on other team)
+                if (lastThrownBy == playerHit.PLStat)
+                {
+                    //Debug.Log("Player hit with <color=purple>OWN</color> ball.");
+                }
+                else
+                {
+                    Debug.Log("PLAYER HIT WITH THROWN BALL");
+                }
             }
-            else if(currentBallState == BallState.Thrown)
-            {
-
-            }
+        }
+        else if(collision.gameObject.GetComponent<Ball>())
+        {
+            // hit another ball
+        }
+        else
+        {
+            SetToIdle();
         }
     }
 }

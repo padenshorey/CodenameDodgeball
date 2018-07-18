@@ -185,7 +185,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fd88901ec63d7844b5f7d31424ebb89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentBallState: 0
   bounce: {fileID: 8300000, guid: 72b485f6c7d57e64d8cf60a37158d494, type: 3}
+  lastThrownBy: {fileID: 0}
 --- !u!212 &212543555285660200
 SpriteRenderer:
   m_ObjectHideFlags: 1

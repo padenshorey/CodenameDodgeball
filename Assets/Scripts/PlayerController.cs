@@ -11,8 +11,12 @@ public class PlayerController : MonoBehaviour
         Walking,
         Carrying,
         Dashing,
-        Throwing
+        Throwing,
+        PickingUp
     }
+
+    // human control
+    public bool isRealPlayer = true;
 
     // Normal Movements Variables
     private float walkSpeed;
@@ -24,6 +28,7 @@ public class PlayerController : MonoBehaviour
     private bool sprinting = false;
 
     private PlayerStat plStat;
+    public PlayerStat PLStat { get { return plStat; } }
     private Rigidbody2D rigidbody2D;
 
     private Vector2 normalizedDirection;
@@ -44,6 +49,7 @@ public class PlayerController : MonoBehaviour
 
     // ball
     private Ball ballBeingHeld;
+    public List<Ball> ballInZone = new List<Ball>();
 
     // hands
     public Transform leftHand;
@@ -59,6 +65,13 @@ public class PlayerController : MonoBehaviour
     private float throwStartTime;
 
     public List<QuickThrowIcon> quickThrowIcons = new List<QuickThrowIcon>();
+
+    // controls
+    private KeyCode quickThrow = KeyCode.P;
+    private KeyCode startThrow = KeyCode.Space;
+    private KeyCode dropBall = KeyCode.J;
+    private KeyCode pickupBall = KeyCode.Space;
+    private KeyCode dash = KeyCode.O;
 
     void Start()
     {
@@ -76,62 +89,111 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        curSpeed = sprinting ? sprintSpeed : walkSpeed;
-
-        if (curSpeed > maxSpeed) curSpeed = maxSpeed;
-
-        Vector2 analogAxis = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-
-        //this makes sure that the character is always facing a direction
-        normalizedDirection = analogAxis.normalized == Vector2.zero ? normalizedDirection : analogAxis.normalized;
-
-        if (analogAxis.magnitude > 1f)
+        if (isRealPlayer)
         {
-            analogAxis = analogAxis.normalized;
+            curSpeed = sprinting ? sprintSpeed : walkSpeed;
+
+            if (curSpeed > maxSpeed) curSpeed = maxSpeed;
+
+            Vector2 analogAxis = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+
+            //this makes sure that the character is always facing a direction
+            normalizedDirection = analogAxis.normalized == Vector2.zero ? normalizedDirection : analogAxis.normalized;
+
+            if (analogAxis.magnitude > 1f)
+            {
+                analogAxis = analogAxis.normalized;
+            }
+
+            Vector2 movementLerp = Vector2.Lerp(new Vector2(rigidbody2D.velocity.x, rigidbody2D.velocity.y), analogAxis * curSpeed * throwSpeedModifier, lerpSpeed);
+
+            rigidbody2D.velocity = movementLerp;
+
+            Vector2 staticVector = new Vector2(0f, 1f);
+
+            float rotationAngleRelative = Mathf.Atan2(normalizedDirection.y, -normalizedDirection.x) - Mathf.Atan2(staticVector.y, staticVector.x);
+            rotationAngleRelative *= Mathf.Rad2Deg;
+            rotationAngleRelative *= -1f;
+
+            characterPlayer.eulerAngles = new Vector3(0, 0, rotationAngleRelative);
         }
-
-        Vector2 movementLerp = Vector2.Lerp(new Vector2(rigidbody2D.velocity.x, rigidbody2D.velocity.y), analogAxis * curSpeed * throwSpeedModifier, lerpSpeed);
-
-        rigidbody2D.velocity = movementLerp;
-
-        Vector2 staticVector = new Vector2(0f, 1f);
-
-        float rotationAngleRelative = Mathf.Atan2(normalizedDirection.y, -normalizedDirection.x) - Mathf.Atan2(staticVector.y, staticVector.x);
-        rotationAngleRelative *= Mathf.Rad2Deg;
-        rotationAngleRelative *= -1f;
-
-        characterPlayer.eulerAngles = new Vector3(0, 0, rotationAngleRelative);
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (isRealPlayer)
         {
-            Dash();
-        }
+            if (Input.GetKeyDown(dash))
+            {
+                Dash();
+            }
 
-        // build up throw
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            StartThrow();
-        }
-        else if (Input.GetKeyUp(KeyCode.L))
-        {
-            ThrowBall(throwPower * throwSpeed);
-        }
+            if (Input.GetKeyDown(dropBall))
+            {
+                DropBall();
+            }
 
-        // quick throw
-        if(Input.GetKeyDown(KeyCode.K))
-        {
-            QuickThrow();
-        }
+            if (Input.GetKeyDown(pickupBall))
+            {
+                PickupClosestBall();
+            }
 
-        if(currentPlayerState == PlayerState.Throwing)
-        {
-            PowerUpThrow();
-        }
+            if (currentPlayerState != PlayerState.PickingUp)
+            {
+                // build up throw
+                if (Input.GetKeyDown(startThrow))
+                {
+                    StartThrow();
+                }
+                else if (Input.GetKeyUp(startThrow))
+                {
+                    ThrowBall(throwPower * throwSpeed);
+                }
+            }
+            else
+            {
+                if (Input.GetKeyUp(pickupBall))
+                {
+                    currentPlayerState = PlayerState.Carrying;
+                }
+            }
 
-        ChargeQuickThrow();
+            // quick throw
+            if (Input.GetKeyDown(quickThrow))
+            {
+                QuickThrow();
+            }
+
+            if (currentPlayerState == PlayerState.Throwing)
+            {
+                PowerUpThrow();
+            }
+
+            ChargeQuickThrow();
+        }
+    }
+
+    public void PickupClosestBall()
+    {
+        if(ballInZone.Count > 0)
+        {
+            currentPlayerState = PlayerState.PickingUp;
+            PickupBall(ballInZone[0]);
+        }
+    }
+
+    public void DropBall()
+    {
+        if (ballBeingHeld != null)
+        {
+            ballBeingHeld.Drop();
+            throwSpeedModifier = 1f;
+            ballBeingHeld = null;
+            throwPower = 0f;
+            throwMeterBG.enabled = false;
+            throwMeterFill.enabled = false;
+            SetPlayerState(PlayerState.Idle);
+        }
     }
 
     public void ChargeQuickThrow()
@@ -199,12 +261,17 @@ public class PlayerController : MonoBehaviour
 
     public void PickupBall(Ball ball)
     {
-        if (ballBeingHeld == null && ball.currentBallState == Ball.BallState.Idle)
+        if (ballBeingHeld == null)
         {
-            ball.Pickup();
-            ballBeingHeld = ball;
-            ball.transform.SetParent(characterPlayer);
-            ball.transform.position = Random.Range(0f, 1f) > 0.5f ? rightHand.position : leftHand.position;
+            if (ball.currentBallState != Ball.BallState.Carry)
+            {
+                if (ball.currentBallState == Ball.BallState.Thrown) Debug.Log("<color=orange>Caught a thrown ball!</color>");
+
+                ball.Pickup();
+                ballBeingHeld = ball;
+                ball.transform.SetParent(characterPlayer);
+                ball.transform.position = Random.Range(0f, 1f) > 0.5f ? rightHand.position : leftHand.position;
+            }
         }
         else
         {
@@ -233,7 +300,7 @@ public class PlayerController : MonoBehaviour
     {
         if (ballBeingHeld != null)
         {
-            ballBeingHeld.Throw(power, normalizedDirection);
+            ballBeingHeld.Throw(power, throwSpeed, normalizedDirection, plStat);
             throwSpeedModifier = 1f;
             ballBeingHeld = null;
             throwPower = 0f;

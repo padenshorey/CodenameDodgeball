@@ -32,13 +32,18 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.B))
         {
-            SpawnNewPlayer(team1.Count + team2.Count);
+            SpawnNewPlayer(-1, true);
         }
+        else if (Input.GetKeyDown(KeyCode.Return))
+        {
+            // TODO: this is not going to work, need a better ID system
+            SpawnNewPlayer(team1.Count + team2.Count, false);
+        }        
     }
 
-    private PlayerStat SpawnNewPlayer(int controllerId)
+    private PlayerStat SpawnNewPlayer(int controllerId, bool isBot = false)
     {
         if(team1.Count == 0 && team2.Count == 0)
         {
@@ -59,6 +64,8 @@ public class GameManager : MonoBehaviour
 
         PlayerStat pStat = pc.GetComponent<PlayerStat>();
         if (pStat == null) Debug.LogError("GameManager SpawnNewPlayer: Player does not have a PlayerStats");
+
+        pc.isRealPlayer = !isBot;
 
         return pStat;
     }

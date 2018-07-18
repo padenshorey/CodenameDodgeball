@@ -195,6 +195,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4074607980803368}
   - component: {fileID: 212990844975321110}
+  - component: {fileID: 58775714602288268}
+  - component: {fileID: 114677483935259386}
   m_Layer: 0
   m_Name: Border
   m_TagString: Untagged
@@ -389,7 +391,7 @@ Transform:
   - {fileID: 4335759187178036}
   - {fileID: 4336428528261940}
   m_Father: {fileID: 4992967428679250}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4992967428679250
 Transform:
@@ -402,8 +404,8 @@ Transform:
   m_LocalScale: {x: 0.3387276, y: 0.3387275, z: 0.3387275}
   m_Children:
   - {fileID: 4074607980803368}
-  - {fileID: 224493985544631340}
   - {fileID: 4978218982153622}
+  - {fileID: 224493985544631340}
   - {fileID: 4527771366148050}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -443,6 +445,21 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 1.16
+--- !u!58 &58775714602288268
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1491836825297878}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.58}
+  serializedVersion: 2
+  m_Radius: 2.62
 --- !u!82 &82973860606284676
 AudioSource:
   m_ObjectHideFlags: 1
@@ -1024,6 +1041,18 @@ MonoBehaviour:
   m_EffectColor: {r: 1, g: 1, b: 1, a: 1}
   m_EffectDistance: {x: 3, y: -3}
   m_UseGraphicAlpha: 0
+--- !u!114 &114677483935259386
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1491836825297878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4adbd6130dea2648b66efb16f5caf80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pControl: {fileID: 0}
 --- !u!114 &114686673990379718
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1094,7 +1123,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e87a34bdc1e8403f8ae1fa937a8881c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isRealPlayer: 1
   characterPlayer: {fileID: 4978218982153622}
+  ballInZone: []
   leftHand: {fileID: 4335759187178036}
   rightHand: {fileID: 4336428528261940}
   throwMeterBG: {fileID: 114046757670507342}
@@ -1495,7 +1526,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1815107716639710}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.74}
+  m_LocalPosition: {x: 0, y: 0, z: -1.38}
   m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
   m_Children:
   - {fileID: 224761459266219226}
@@ -1503,7 +1534,7 @@ RectTransform:
   - {fileID: 224175667357093902}
   - {fileID: 224646527981634928}
   m_Father: {fileID: 4992967428679250}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
