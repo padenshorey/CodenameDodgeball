@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
     private PlayerStat plStat;
     private Rigidbody2D rigidbody2D;
 
+    private Vector2 normalizedDirection;
+
     public Transform characterPlayer;
 
     private float lerpedX = 0;
@@ -70,6 +72,35 @@ public class PlayerController : MonoBehaviour
 
         throwMeterBG.enabled = false;
         throwMeterFill.enabled = false;
+    }
+
+    void FixedUpdate()
+    {
+        curSpeed = sprinting ? sprintSpeed : walkSpeed;
+
+        if (curSpeed > maxSpeed) curSpeed = maxSpeed;
+
+        Vector2 analogAxis = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+
+        //this makes sure that the character is always facing a direction
+        normalizedDirection = analogAxis.normalized == Vector2.zero ? normalizedDirection : analogAxis.normalized;
+
+        if (analogAxis.magnitude > 1f)
+        {
+            analogAxis = analogAxis.normalized;
+        }
+
+        Vector2 movementLerp = Vector2.Lerp(new Vector2(rigidbody2D.velocity.x, rigidbody2D.velocity.y), analogAxis * curSpeed * throwSpeedModifier, lerpSpeed);
+
+        rigidbody2D.velocity = movementLerp;
+
+        Vector2 staticVector = new Vector2(0f, 1f);
+
+        float rotationAngleRelative = Mathf.Atan2(normalizedDirection.y, -normalizedDirection.x) - Mathf.Atan2(staticVector.y, staticVector.x);
+        rotationAngleRelative *= Mathf.Rad2Deg;
+        rotationAngleRelative *= -1f;
+
+        characterPlayer.eulerAngles = new Vector3(0, 0, rotationAngleRelative);
     }
 
     private void Update()
@@ -132,7 +163,7 @@ public class PlayerController : MonoBehaviour
                     AudioManager.instance.PlaySFX(AudioManager.AudioSFX.SwipeIn);
                     ballThrown = true;
                     quickThrowIcons[i].Reset();
-                }                
+                }
             }
 
             if (ballThrown)
@@ -143,6 +174,8 @@ public class PlayerController : MonoBehaviour
                     quickThrowIcons[i].Reset();
             }
         }
+
+        if(!ballThrown && ballBeingHeld) AudioManager.instance.PlaySFX(AudioManager.AudioSFX.Error);
     }
 
     public void SetPlayerState(PlayerState ps)
@@ -153,8 +186,15 @@ public class PlayerController : MonoBehaviour
 
     private void Dash()
     {
-        rigidbody2D.AddForce(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized * dashMagnitude);
-        plStat.audioSource.PlayOneShot(plStat.swish);
+        if (currentPlayerState != PlayerState.Throwing)
+        {
+            rigidbody2D.AddForce(normalizedDirection * dashMagnitude);
+            plStat.audioSource.PlayOneShot(plStat.swish);
+        }
+        else
+        {
+            AudioManager.instance.PlaySFX(AudioManager.AudioSFX.Error);
+        }
     }
 
     public void PickupBall(Ball ball)
@@ -193,7 +233,7 @@ public class PlayerController : MonoBehaviour
     {
         if (ballBeingHeld != null)
         {
-            ballBeingHeld.Throw(power);
+            ballBeingHeld.Throw(power, normalizedDirection);
             throwSpeedModifier = 1f;
             ballBeingHeld = null;
             throwPower = 0f;
@@ -207,32 +247,4 @@ public class PlayerController : MonoBehaviour
             return false;
         }
     }
-
-    void FixedUpdate()
-    {
-        curSpeed = sprinting ? sprintSpeed : walkSpeed;
-
-        if (curSpeed > maxSpeed) curSpeed = maxSpeed;
-
-        Vector2 analogAxis = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-                       
-        if(analogAxis.magnitude > 1f)
-        {
-            analogAxis = analogAxis.normalized;
-        }
-
-        Vector2 movementLerp = Vector2.Lerp(new Vector2(rigidbody2D.velocity.x, rigidbody2D.velocity.y), analogAxis * curSpeed * throwSpeedModifier, lerpSpeed);
-
-        rigidbody2D.velocity = movementLerp;
-
-        Vector2 staticVector = new Vector2(0f, 1f);
-
-        float rotationAngleRelative = Mathf.Atan2(analogAxis.y, -analogAxis.x) -  Mathf.Atan2(staticVector.y, staticVector.x);
-        rotationAngleRelative *= Mathf.Rad2Deg;
-        rotationAngleRelative *= -1f;
-
-        characterPlayer.eulerAngles = new Vector3(0, 0, rotationAngleRelative);
-    }
-
-
 }

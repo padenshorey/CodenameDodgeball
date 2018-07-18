@@ -43,14 +43,14 @@ public class Ball : MonoBehaviour {
         if(transform.localScale != initialScale && currentBallState != BallState.Carry) transform.localScale = initialScale;
     }
 
-    public void Throw(float power)
+    public void Throw(float power, Vector2 directon)
     {
         timeThrown = Time.time;
 
         rigidbody2D.isKinematic = false;
         rigidbody2D.simulated = true;
         transform.SetParent(null);
-        rigidbody2D.velocity = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized * power;
+        rigidbody2D.velocity = directon * power;
         currentBallState = Ball.BallState.Thrown;
     }
 
