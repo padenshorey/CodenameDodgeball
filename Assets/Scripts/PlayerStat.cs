@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerStat : MonoBehaviour
 {
@@ -29,6 +30,28 @@ public class PlayerStat : MonoBehaviour
         characterBorder.color = color;
         GetComponent<Animator>().SetTrigger("Throb");
         audioSource.PlayOneShot(boing);
+        PlayerController pc = GetComponent<PlayerController>();
+        pc.throwMeterBG.GetComponent<Outline>().effectColor = ChangeColorBrightness(color, 0.8f);
+        pc.throwMeterFill.color = color;
+        foreach(QuickThrowIcon q in pc.quickThrowIcons)
+        {
+            q.fill.color = color;
+        }
     }
+
+    public static Color ChangeColorBrightness(Color color, float correctionFactor)
+    {
+        float red = (float)color.r;
+        float green = (float)color.g;
+        float blue = (float)color.b;
+
+        red *= correctionFactor;
+        green *= correctionFactor;
+        blue *= correctionFactor;
+
+
+        return new Color(red, green, blue);
+    }
+
 
 }

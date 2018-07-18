@@ -28,8 +28,6 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
 
         DontDestroyOnLoad(gameObject);
-
-        AudioManager.instance.PlaySFX(AudioManager.AudioSFX.Slam);
     }
 
     private void Update()

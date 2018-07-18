@@ -11,7 +11,8 @@ public class AudioManager : MonoBehaviour {
         Slam,
         Boing,
         SwipeIn,
-        SwipeOut
+        SwipeOut,
+        Pop
     }
 
     public AudioSource audioSource;
@@ -20,6 +21,7 @@ public class AudioManager : MonoBehaviour {
     public AudioClip slam;
     public AudioClip swipeIn;
     public AudioClip swipeOut;
+    public AudioClip pop;
 
     void Start () {
         if (instance == null)
@@ -46,6 +48,9 @@ public class AudioManager : MonoBehaviour {
                 break;
             case AudioSFX.SwipeOut:
                 clipToPlay = swipeOut;
+                break;
+            case AudioSFX.Pop:
+                clipToPlay = pop;
                 break;
         }
 
