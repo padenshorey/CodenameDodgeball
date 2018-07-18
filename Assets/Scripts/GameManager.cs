@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance = null;
+
     public GamePreferences gamePreferences;
 
     public Animator titleAnimator;
@@ -14,7 +16,21 @@ public class GameManager : MonoBehaviour
     public Text team1Num;
     public Text team2Num;
 
+    public Ball ballPrefab;
+
     public PlayerController playerController;
+
+    void Start()
+    {
+        if (instance == null)
+            instance = this;
+        else if (instance != this)
+            Destroy(gameObject);
+
+        DontDestroyOnLoad(gameObject);
+
+        AudioManager.instance.PlaySFX(AudioManager.AudioSFX.Slam);
+    }
 
     private void Update()
     {
@@ -29,17 +45,32 @@ public class GameManager : MonoBehaviour
         if(team1.Count == 0 && team2.Count == 0)
         {
             titleAnimator.SetTrigger("SlideUp");
+            AudioManager.instance.PlaySFX(AudioManager.AudioSFX.SwipeOut);
+
+            for(int i = 0; i < 5; i++)
+            {
+                SpawnBall();
+            }
         }
 
         PlayerController pc = Instantiate(playerController, GetSpawnPosition(), Quaternion.identity);
         Vector2 target = new Vector2(Random.Range(-0.15f, 0.15f), Random.Range(-0.15f, 0.15f));
         Vector2 v = (target - new Vector2(pc.transform.position.x, pc.transform.position.y)).normalized;
         pc.GetComponent<Rigidbody2D>().velocity = v * Random.Range(150f, 200f);
+        AudioManager.instance.PlaySFX(AudioManager.AudioSFX.Slam);
 
         PlayerStat pStat = pc.GetComponent<PlayerStat>();
         if (pStat == null) Debug.LogError("GameManager SpawnNewPlayer: Player does not have a PlayerStats");
 
         return pStat;
+    }
+
+    private void SpawnBall()
+    {
+        Ball ball = Instantiate(ballPrefab, GetSpawnPosition(), Quaternion.identity);
+        Vector2 target = new Vector2(Random.Range(-0.15f, 0.15f), Random.Range(-0.15f, 0.15f));
+        Vector2 v = (target - new Vector2(ball.transform.position.x, ball.transform.position.y)).normalized;
+        ball.GetComponent<Rigidbody2D>().velocity = v * Random.Range(25f, 35f);
     }
 
     private Vector3 GetSpawnPosition()

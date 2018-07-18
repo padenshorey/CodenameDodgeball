@@ -21,6 +21,11 @@ public class PlayerController : MonoBehaviour
     private float lerpedX = 0;
     private float lerpedY = 0;
 
+    // dash
+    private bool isDashing;
+    private float dashCooldown;
+    private float dashMagnitude = 1000f;
+
     void Start()
     {
         plStat = GetComponent<PlayerStat>();
@@ -28,6 +33,20 @@ public class PlayerController : MonoBehaviour
 
         walkSpeed = (float)(plStat.Speed + (plStat.Agility / 5));
         sprintSpeed = walkSpeed + (walkSpeed / 2);
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            Dash();
+        }
+    }
+
+    private void Dash()
+    {
+        rigidbody2D.AddForce(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * dashMagnitude);
+        plStat.audioSource.PlayOneShot(plStat.swish);
     }
 
     void FixedUpdate()

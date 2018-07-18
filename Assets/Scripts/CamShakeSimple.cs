@@ -4,26 +4,21 @@ using System.Collections;
 public class CamShakeSimple : MonoBehaviour 
 {
     Vector3 originalCameraPosition;
-    Vector3 originalCanvasPosition;
 
     float shakeAmt = 0;
 
     public Camera mainCamera;
-    public Canvas mainCanvas;
 
     public void Awake()
     {
         originalCameraPosition = mainCamera.transform.position;
-        originalCanvasPosition = mainCanvas.transform.position;
     }
 
     public void ShakeCamera(float amount) 
     {
-
         shakeAmt = amount * .0025f;
         InvokeRepeating("CameraShake", 0, .01f);
         Invoke("StopShaking", 0.3f);
-
     }
 
     void CameraShake()
@@ -35,7 +30,6 @@ public class CamShakeSimple : MonoBehaviour
             pp.x += quakeAmt;
             pp.y += quakeAmt; // can also add to x and/or z
             mainCamera.transform.position = pp;
-            mainCanvas.transform.position = pp;
         }
     }
 
@@ -43,7 +37,6 @@ public class CamShakeSimple : MonoBehaviour
     {
         CancelInvoke("CameraShake");
         mainCamera.transform.position = originalCameraPosition;
-        mainCanvas.transform.position = originalCanvasPosition;
     }
 
 }
