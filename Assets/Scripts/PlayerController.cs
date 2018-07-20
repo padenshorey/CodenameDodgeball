@@ -96,7 +96,6 @@ public class PlayerController : MonoBehaviour
     private void SetupControls()
     {
         xboxController = new XboxController(plStat.controllerId);
-        Debug.Log(xboxController.lb);
     }
 
     void FixedUpdate()

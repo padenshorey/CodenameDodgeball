@@ -8,6 +8,8 @@ public class TeamZone : MonoBehaviour
     public AudioClip slam;
     public void OnTriggerEnter2D(Collider2D other)
     {
+        if (GameManager.instance.currentGameState != GameManager.GameState.Lobby) return;
+
         if (other.GetComponent<PlayerStat>() != null)
         {
             FindObjectOfType<GameManager>().AssignTeam(other.GetComponent<PlayerStat>(), team);

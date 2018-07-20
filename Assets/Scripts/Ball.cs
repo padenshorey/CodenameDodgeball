@@ -25,6 +25,9 @@ public class Ball : MonoBehaviour {
     private Vector3 initialScale;
 
     public PlayerStat lastThrownBy;
+    public SpriteRenderer ballSprite;
+    public Animator animator;
+    public GameObject trail;
 
     private const float MAX_BALL_AIRTIME = 1.5f;
 
@@ -32,7 +35,9 @@ public class Ball : MonoBehaviour {
     {
         audioSource = GetComponent<AudioSource>();
         rigidbody2D = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         initialScale = transform.localScale;
+        trail.SetActive(false);
     }
 
     private void Update()
@@ -55,13 +60,17 @@ public class Ball : MonoBehaviour {
     private void SetBallColor(float progress)
     {
         Color c = new Color(progress, progress, progress);
-        GetComponent<SpriteRenderer>().color = c;
+        ballSprite.color = c;
     }
 
     public void SetToIdle()
     {
         currentBallState = BallState.Idle;
-        GetComponent<SpriteRenderer>().color = Color.white;
+        ballSprite.color = Color.white;
+
+        animator.SetTrigger("Dead");
+        trail.SetActive(false);
+
         lastThrownBy = null;
     }
 
@@ -80,6 +89,9 @@ public class Ball : MonoBehaviour {
 
         timeThrown = Time.time;
         throwTimeout = (power / max) * MAX_BALL_AIRTIME;
+
+        animator.SetTrigger("Throw");
+        trail.SetActive(true);
 
         rigidbody2D.isKinematic = false;
         rigidbody2D.simulated = true;

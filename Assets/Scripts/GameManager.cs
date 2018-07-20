@@ -5,11 +5,19 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public enum GameState
+    {
+        Lobby,
+        Playing
+    }
+
     public static GameManager instance = null;
 
     public GamePreferences gamePreferences;
 
     public bool KeyboardEnabled = true;
+
+    public GameState currentGameState = GameState.Lobby;
 
     public Animator titleAnimator;
 
@@ -21,6 +29,9 @@ public class GameManager : MonoBehaviour
     public Ball ballPrefab;
 
     public PlayerController playerController;
+
+    public DodgeballGame currentGame;
+    public DodgeballRound currentRound;
 
     void Start()
     {
@@ -79,6 +90,20 @@ public class GameManager : MonoBehaviour
         }
 #endif
 
+    }
+
+    private void StartGame()
+    {
+        // TODO: for now it just starts a game based on the max players on one team
+        currentGameState = GameState.Playing;
+        currentGame = new DodgeballGame(5, (DodgeballGame.GameType)Mathf.Max(team1.Count, team2.Count), team1, team2);
+    }
+
+    public void EndGame(DodgeballGame game)
+    {
+        currentGameState = GameState.Lobby;
+        currentGame = null;
+        currentRound = null;
     }
 
     private bool PlayerAlreadySpawned(int id)
