@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
         PickingUp
     }
 
+    public XboxController xboxController;
+
     // human control
     public bool isRealPlayer = true;
 
@@ -76,7 +78,11 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         plStat = GetComponent<PlayerStat>();
+        plStat.Setup();
+
         rigidbody2D = GetComponent<Rigidbody2D>();
+
+        SetupControls();
 
         walkSpeed = (float)(plStat.Speed + (plStat.Agility / 5));
         sprintSpeed = walkSpeed + (walkSpeed / 2);
@@ -87,15 +93,33 @@ public class PlayerController : MonoBehaviour
         throwMeterFill.enabled = false;
     }
 
+    private void SetupControls()
+    {
+        xboxController = new XboxController(plStat.controllerId);
+        Debug.Log(xboxController.lb);
+    }
+
     void FixedUpdate()
     {
-        if (isRealPlayer)
+        if (isRealPlayer && xboxController != null)
         {
             curSpeed = sprinting ? sprintSpeed : walkSpeed;
 
             if (curSpeed > maxSpeed) curSpeed = maxSpeed;
 
-            Vector2 analogAxis = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            Vector2 analogAxis;
+            //if(GameManager.instance.KeyboardEnabled)
+            //{
+            //    analogAxis = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            //}
+            //else
+            //{
+#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+            analogAxis = new Vector2(Input.GetAxis(xboxController.joyLeftHori), -Input.GetAxis(xboxController.joyLeftVert));
+#else
+            analogAxis = new Vector2(Input.GetAxis(xboxController.joyLeftHori), Input.GetAxis(xboxController.joyLeftVert));
+            //}
+#endif
 
             //this makes sure that the character is always facing a direction
             normalizedDirection = analogAxis.normalized == Vector2.zero ? normalizedDirection : analogAxis.normalized;
@@ -121,19 +145,21 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (isRealPlayer)
+        if (isRealPlayer && xboxController != null)
         {
-            if (Input.GetKeyDown(dash))
+            Debug.Log("Checking for input");
+            if (Input.GetKeyDown(dash) || Input.GetButtonDown(xboxController.lb))
             {
+                Debug.Log("Dash boy");
                 Dash();
             }
 
-            if (Input.GetKeyDown(dropBall))
+            if (Input.GetKeyDown(dropBall) || Input.GetButtonDown(xboxController.b))
             {
                 DropBall();
             }
 
-            if (Input.GetKeyDown(pickupBall))
+            if (Input.GetKeyDown(pickupBall) || Input.GetButtonDown(xboxController.a))
             {
                 PickupClosestBall();
             }
@@ -141,25 +167,25 @@ public class PlayerController : MonoBehaviour
             if (currentPlayerState != PlayerState.PickingUp)
             {
                 // build up throw
-                if (Input.GetKeyDown(startThrow))
+                if (Input.GetKeyDown(startThrow) || Input.GetButtonDown(xboxController.a))
                 {
                     StartThrow();
                 }
-                else if (Input.GetKeyUp(startThrow))
+                else if (Input.GetKeyUp(startThrow) || Input.GetButtonUp(xboxController.a))
                 {
                     ThrowBall(throwPower * throwSpeed);
                 }
             }
             else
             {
-                if (Input.GetKeyUp(pickupBall))
+                if (Input.GetKeyUp(pickupBall) || Input.GetButtonUp(xboxController.a))
                 {
                     currentPlayerState = PlayerState.Carrying;
                 }
             }
 
             // quick throw
-            if (Input.GetKeyDown(quickThrow))
+            if (Input.GetKeyDown(quickThrow) || Input.GetButtonDown(xboxController.x))
             {
                 QuickThrow();
             }

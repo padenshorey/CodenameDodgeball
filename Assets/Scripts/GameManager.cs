@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
 
     public GamePreferences gamePreferences;
 
+    public bool KeyboardEnabled = true;
+
     public Animator titleAnimator;
 
     public List<PlayerStat> team1;
