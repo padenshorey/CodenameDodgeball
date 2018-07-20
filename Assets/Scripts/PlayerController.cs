@@ -108,17 +108,19 @@ public class PlayerController : MonoBehaviour
             if (curSpeed > maxSpeed) curSpeed = maxSpeed;
 
             Vector2 analogAxis;
-            //if(GameManager.instance.KeyboardEnabled)
-            //{
-            //    analogAxis = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-            //}
-            //else
-            //{
+            if(GameManager.instance.KeyboardEnabled)
+            {
+                float axisX = (Input.GetKey(KeyCode.A) ? -1 : 0) + (Input.GetKey(KeyCode.D) ? 1 : 0);
+                float axisY = (Input.GetKey(KeyCode.S) ? -1 : 0) + (Input.GetKey(KeyCode.W) ? 1 : 0);
+                analogAxis = new Vector2(axisX, axisY);
+            }
+            else
+            {
 #if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
             analogAxis = new Vector2(Input.GetAxis(xboxController.joyLeftHori), -Input.GetAxis(xboxController.joyLeftVert));
 #else
             analogAxis = new Vector2(Input.GetAxis(xboxController.joyLeftHori), Input.GetAxis(xboxController.joyLeftVert));
-            //}
+            }
 #endif
 
             //this makes sure that the character is always facing a direction
@@ -147,56 +149,117 @@ public class PlayerController : MonoBehaviour
     {
         if (isRealPlayer && xboxController != null)
         {
-            Debug.Log("Checking for input");
-            if (Input.GetKeyDown(dash) || Input.GetButtonDown(xboxController.lb))
+            if(GameManager.instance.KeyboardEnabled)
             {
-                Debug.Log("Dash boy");
-                Dash();
-            }
-
-            if (Input.GetKeyDown(dropBall) || Input.GetButtonDown(xboxController.b))
-            {
-                DropBall();
-            }
-
-            if (Input.GetKeyDown(pickupBall) || Input.GetButtonDown(xboxController.a))
-            {
-                PickupClosestBall();
-            }
-
-            if (currentPlayerState != PlayerState.PickingUp)
-            {
-                // build up throw
-                if (Input.GetKeyDown(startThrow) || Input.GetButtonDown(xboxController.a))
-                {
-                    StartThrow();
-                }
-                else if (Input.GetKeyUp(startThrow) || Input.GetButtonUp(xboxController.a))
-                {
-                    ThrowBall(throwPower * throwSpeed);
-                }
+                CheckKeyboardInput();
             }
             else
             {
-                if (Input.GetKeyUp(pickupBall) || Input.GetButtonUp(xboxController.a))
-                {
-                    currentPlayerState = PlayerState.Carrying;
-                }
+                CheckXboxInput();
             }
-
-            // quick throw
-            if (Input.GetKeyDown(quickThrow) || Input.GetButtonDown(xboxController.x))
-            {
-                QuickThrow();
-            }
-
-            if (currentPlayerState == PlayerState.Throwing)
-            {
-                PowerUpThrow();
-            }
-
-            ChargeQuickThrow();
         }
+    }
+
+    public void CheckKeyboardInput()
+    {
+        if (Input.GetKeyDown(dash))
+        {
+            Dash();
+        }
+
+        if (Input.GetKeyDown(dropBall))
+        {
+            DropBall();
+        }
+
+        if (Input.GetKeyDown(pickupBall))
+        {
+            PickupClosestBall();
+        }
+
+        if (currentPlayerState != PlayerState.PickingUp)
+        {
+            // build up throw
+            if (Input.GetKeyDown(startThrow))
+            {
+                StartThrow();
+            }
+            else if (Input.GetKeyUp(startThrow))
+            {
+                ThrowBall(throwPower * throwSpeed);
+            }
+        }
+        else
+        {
+            if (Input.GetKeyUp(pickupBall))
+            {
+                currentPlayerState = PlayerState.Carrying;
+            }
+        }
+
+        // quick throw
+        if (Input.GetKeyDown(quickThrow))
+        {
+            QuickThrow();
+        }
+
+        if (currentPlayerState == PlayerState.Throwing)
+        {
+            PowerUpThrow();
+        }
+
+        ChargeQuickThrow();
+    }
+
+    public void CheckXboxInput()
+    {
+        if (Input.GetButtonDown(xboxController.lb))
+        {
+            Dash();
+        }
+
+        if (Input.GetButtonDown(xboxController.b))
+        {
+            DropBall();
+        }
+
+        if (Input.GetButtonDown(xboxController.a))
+        {
+            PickupClosestBall();
+        }
+
+        if (currentPlayerState != PlayerState.PickingUp)
+        {
+            // build up throw
+            if (Input.GetButtonDown(xboxController.a))
+            {
+                StartThrow();
+            }
+            else if (Input.GetButtonUp(xboxController.a))
+            {
+                ThrowBall(throwPower * throwSpeed);
+            }
+        }
+        else
+        {
+            if (Input.GetButtonUp(xboxController.a))
+            {
+                currentPlayerState = PlayerState.Carrying;
+            }
+        }
+
+        // quick throw
+        if (Input.GetButtonDown(xboxController.x))
+        {
+            QuickThrow();
+        }
+
+        if (currentPlayerState == PlayerState.Throwing)
+        {
+            PowerUpThrow();
+        }
+
+        ChargeQuickThrow();
     }
 
     public void PickupClosestBall()

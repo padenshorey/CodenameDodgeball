@@ -1,10 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class XboxController
+﻿public class XboxController
 {
-
     public int controllerId;
 
     public string a = "A_";
@@ -19,7 +14,6 @@ public class XboxController
 
     public string start = "Start_";
     public string back = "Back_";
-    //public string xboxButton = "XboxButton_";
 
     public string joyLeftHori = "L_XAxis_";
     public string joyLeftVert = "L_YAxis_";
@@ -31,9 +25,18 @@ public class XboxController
     public string dpadVert = "Dpad_YAxis_";
     public string dpadHori = "Dpad_XAxis_";
 
-    public XboxController(int controllerId)
+#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+    public string dpadUp = "Dpad_Up_";
+    public string dpadDown = "Dpad_Down_";
+    public string dpadLeft = "Dpad_Left_";
+    public string dpadRight = "Dpad_Right_";
+
+    public string xboxButton = "XboxButton_";
+#endif
+
+    public XboxController(int cId)
     {
-        controllerId = controllerId;
+        controllerId = cId;
         string id = controllerId.ToString();
 #if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
         id = "MAC_" + id;
@@ -50,7 +53,6 @@ public class XboxController
 
         start += id;
         back += id;
-        //xboxButton += id.;
 
         joyLeftHori += id;
         joyLeftVert += id;
@@ -59,7 +61,15 @@ public class XboxController
         joyRightVert += id;
         joyRightClick += id;
 
+#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+        dpadUp += id;
+        dpadDown += id;
+        dpadLeft += id;
+        dpadRight += id;
+        xboxButton += id;
+#elif UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
         dpadVert += id;
         dpadHori += id;
+#endif
     }
 }

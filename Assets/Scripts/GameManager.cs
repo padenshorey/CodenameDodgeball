@@ -36,13 +36,66 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.B))
         {
-            SpawnNewPlayer(-1, true);
+            SpawnNewPlayer(-999, true);
         }
         else if (Input.GetKeyDown(KeyCode.Return))
         {
-            // TODO: this is not going to work, need a better ID system
-            SpawnNewPlayer(team1.Count + team2.Count, false);
-        }        
+            if (!PlayerAlreadySpawned(-1)) SpawnNewPlayer(-1, false);
+        }
+
+#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+        if(Input.GetButtonDown("Start_MAC_1"))
+        {
+            if (!PlayerAlreadySpawned(1)) SpawnNewPlayer(1);
+        }
+        else if (Input.GetButtonDown("Start_MAC_2"))
+        {
+            if (!PlayerAlreadySpawned(2)) SpawnNewPlayer(2);
+        }
+        else if (Input.GetButtonDown("Start_MAC_3"))
+        {
+            if (!PlayerAlreadySpawned(3)) SpawnNewPlayer(3);
+        }
+        else if (Input.GetButtonDown("Start_MAC_4"))
+        {
+            if(!PlayerAlreadySpawned(4)) SpawnNewPlayer(4);
+        }
+#else
+        if (Input.GetButtonDown("Start_1"))
+        {
+            if (!PlayerAlreadySpawned(1)) SpawnNewPlayer(1);
+        }
+        else if (Input.GetButtonDown("Start_2"))
+        {
+            if (!PlayerAlreadySpawned(2)) SpawnNewPlayer(2);
+        }
+        else if (Input.GetButtonDown("Start_3"))
+        {
+            if (!PlayerAlreadySpawned(3)) SpawnNewPlayer(3);
+        }
+        else if (Input.GetButtonDown("Start_4"))
+        {
+            if(!PlayerAlreadySpawned(4)) SpawnNewPlayer(4);
+        }
+#endif
+
+    }
+
+    private bool PlayerAlreadySpawned(int id)
+    {
+        foreach(PlayerStat p in team1)
+        {
+            if (p.controllerId == id)
+                return true;
+        }
+
+        foreach (PlayerStat p in team2)
+        {
+            if (p.controllerId == id)
+                return true;
+        }
+
+        return false;
     }
 
     private PlayerStat SpawnNewPlayer(int controllerId, bool isBot = false)
@@ -67,6 +120,7 @@ public class GameManager : MonoBehaviour
         PlayerStat pStat = pc.GetComponent<PlayerStat>();
         if (pStat == null) Debug.LogError("GameManager SpawnNewPlayer: Player does not have a PlayerStats");
 
+        pStat.controllerId = controllerId;
         pc.isRealPlayer = !isBot;
 
         return pStat;

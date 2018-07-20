@@ -23,7 +23,6 @@ public class PlayerStat : MonoBehaviour
     public void Setup()
     {
         audioSource = GetComponent<AudioSource>();
-        controllerId = GameManager.instance.team1.Count + GameManager.instance.team2.Count + 1;
     }
 
     public void SetPlayerColor(Color color)
