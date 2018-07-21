@@ -52,7 +52,7 @@ MonoBehaviour:
     m_Pattern: movie.<ext>
   m_DestinationPath:
     m_root: 0
-    m_leaf: C:/Users/shoreyp/Desktop
+    m_leaf: /Users/padenshorey/Desktop
   m_InputsSettings:
     m_InputsSettingsAssets:
     - {fileID: 114975802902885004}

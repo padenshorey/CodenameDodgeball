@@ -627,7 +627,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.764151, g: 0.44370055, b: 0, a: 0.3019608}
+  m_Color: {r: 0, g: 0.27407104, b: 0.7647059, a: 0.3019608}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1894,9 +1894,9 @@ MonoBehaviour:
   - {r: 0.6320754, g: 0, b: 0, a: 1}
   - {r: 0.7924528, g: 0, b: 0.36273494, a: 1}
   team2Colors:
-  - {r: 0.8867924, g: 0.85119265, b: 0, a: 1}
-  - {r: 1, g: 0.9904717, b: 0.5235849, a: 1}
-  - {r: 0.735849, g: 0.61051047, b: 0.1492524, a: 1}
+  - {r: 0.023050921, g: 0.37199032, b: 0.6981132, a: 1}
+  - {r: 0.25579336, g: 0.20901564, b: 0.7264151, a: 1}
+  - {r: 0.1490196, g: 0.5556097, b: 0.7372549, a: 1}
   lobbyRespawnTime: 1.5
   respawnInvulnerabilityPeriod: 1
   timeForQuickThrowRecharge: 10
@@ -1905,6 +1905,7 @@ MonoBehaviour:
   FULL_POWER_TIME: 1.5
   minThrowPower: 5
   curveInfluence: 200
+  emojiCooldown: 0.25
 --- !u!4 &1638420462
 Transform:
   m_ObjectHideFlags: 0
@@ -2509,3 +2510,47 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2006496878}
+--- !u!1 &2026975522
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 2026975524}
+  - component: {fileID: 2026975523}
+  m_Layer: 0
+  m_Name: Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2026975523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2026975522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65ea655fdd8f24592b919802789796d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupCanvas: {fileID: 114101064566010700, guid: ac2d7b100257446c5a4aafcf1c7bd073,
+    type: 2}
+  screenWipe: {fileID: 114091844808685594, guid: 6826789cbc11b45639129697b591c53d,
+    type: 2}
+--- !u!4 &2026975524
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2026975522}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

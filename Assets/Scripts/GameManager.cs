@@ -43,6 +43,11 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void TestCallback()
+    {
+        Debug.Log("Screen wipe complete.");
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.B))
@@ -52,6 +57,10 @@ public class GameManager : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Return))
         {
             if (!PlayerAlreadySpawned(-1)) SpawnNewPlayer(-1, false);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            Spawner.instance.SpawnScreenWipe(2f, "TESTING 123!", TestCallback);
         }
 
 #if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX

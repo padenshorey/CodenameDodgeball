@@ -138,6 +138,8 @@ public class Ball : MonoBehaviour {
         currentBallState = Ball.BallState.Thrown;
 
         multiTrailInstance =  Instantiate(multiTrail, transform);
+        multiTrailInstance.startColor = by.playerColor;
+        multiTrailInstance.endColor = by.playerColor;
     }
 
     public void Pickup()

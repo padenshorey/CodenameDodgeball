@@ -44,3 +44,6 @@ TagManager:
   - name: Player
     uniqueID: 944525835
     locked: 0
+  - name: ScreenWipes
+    uniqueID: 1260273867
+    locked: 0

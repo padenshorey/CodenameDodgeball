@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(currentPlayerState == PlayerState.Dead)
+        if (currentPlayerState == PlayerState.Dead)
         {
             return;
         }
@@ -157,14 +157,14 @@ public class PlayerController : MonoBehaviour
     {
         if (currentPlayerState == PlayerState.Dead)
         {
-            if(Time.time > (timeOfDeath + GameManager.instance.gamePreferences.lobbyRespawnTime))
+            if (Time.time > (timeOfDeath + GameManager.instance.gamePreferences.lobbyRespawnTime))
             {
                 RespawnPlayer();
             }
             return;
         }
 
-        if(currentPlayerState == PlayerState.Respawning)
+        if (currentPlayerState == PlayerState.Respawning)
         {
             if (Time.time > (timeOfRespawn + GameManager.instance.gamePreferences.respawnInvulnerabilityPeriod))
             {
@@ -174,7 +174,7 @@ public class PlayerController : MonoBehaviour
 
         if (isRealPlayer && xboxController != null)
         {
-            if(GameManager.instance.KeyboardEnabled)
+            if (GameManager.instance.KeyboardEnabled)
             {
                 CheckKeyboardInput();
             }
@@ -272,6 +272,41 @@ public class PlayerController : MonoBehaviour
                 currentPlayerState = PlayerState.Carrying;
             }
         }
+#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+        if (Input.GetButtonDown(xboxController.dpadUp))
+        {
+            plStat.DoEmoji(0);
+        }
+        else if (Input.GetButtonDown(xboxController.dpadDown))
+        {
+            plStat.DoEmoji(1);
+        }
+        else if (Input.GetButtonDown(xboxController.dpadLeft))
+        {
+            plStat.DoEmoji(2);
+        }
+        else if (Input.GetButtonDown(xboxController.dpadRight))
+        {
+            plStat.DoEmoji(3);
+        }
+#elif UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+        if (Input.GetAxis(xboxController.dpadVert > 0.98))
+        {
+            plStat.DoEmoji(0);
+        }
+        else if (Input.GetAxis(xboxController.dpadVert < -0.98))
+        {
+            plStat.DoEmoji(1);
+        }
+        else if (Input.GetAxis(xboxController.dpadHori > 0.98)))
+        {
+            plStat.DoEmoji(2);
+        }
+        else if (Input.GetAxis(xboxController.dpadHori < -0.98))
+        {
+            plStat.DoEmoji(3);
+        }
+#endif
 
         // quick throw
         if (Input.GetButtonDown(xboxController.x))
