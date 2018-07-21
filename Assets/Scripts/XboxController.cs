@@ -4,8 +4,8 @@
 
     public string a = "A_";
     public string b = "B_";
-    public string y = "X_";
-    public string x = "Y_";
+    public string x = "X_";
+    public string y = "Y_";
 
     public string lt = "TriggersL_";
     public string rt = "TriggersR_";

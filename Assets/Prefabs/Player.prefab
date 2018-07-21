@@ -954,6 +954,7 @@ MonoBehaviour:
   audioSource: {fileID: 82973860606284676}
   boing: {fileID: 8300000, guid: 7ad2e13632f85f54883555125df99522, type: 3}
   swish: {fileID: 8300000, guid: 8d530a4ff32363041b7837efec91afff, type: 3}
+  playerController: {fileID: 0}
 --- !u!114 &114329975114110480
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1163,6 +1164,7 @@ MonoBehaviour:
   - {fileID: 114932023052537006}
   - {fileID: 114686673990379718}
   - {fileID: 114729834085271114}
+  explosion: {fileID: 139366, guid: b185c1a9cf067374586d095111b15bd1, type: 2}
 --- !u!114 &114932023052537006
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -20,6 +20,8 @@ public class PlayerStat : MonoBehaviour
     public AudioClip boing;
     public AudioClip swish;
 
+    public PlayerController playerController;
+
     public void Setup()
     {
         audioSource = GetComponent<AudioSource>();
@@ -30,10 +32,10 @@ public class PlayerStat : MonoBehaviour
         characterBorder.color = color;
         GetComponent<Animator>().SetTrigger("Throb");
         audioSource.PlayOneShot(boing);
-        PlayerController pc = GetComponent<PlayerController>();
-        pc.throwMeterBG.GetComponent<Outline>().effectColor = ChangeColorBrightness(color, 0.8f);
-        pc.throwMeterFill.color = color;
-        foreach(QuickThrowIcon q in pc.quickThrowIcons)
+        playerController = GetComponent<PlayerController>();
+        playerController.throwMeterBG.GetComponent<Outline>().effectColor = ChangeColorBrightness(color, 0.8f);
+        playerController.throwMeterFill.color = color;
+        foreach(QuickThrowIcon q in playerController.quickThrowIcons)
         {
             q.fill.color = color;
         }

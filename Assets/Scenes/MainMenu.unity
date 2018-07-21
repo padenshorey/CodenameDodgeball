@@ -1565,7 +1565,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gamePreferences: {fileID: 1638420461}
-  KeyboardEnabled: 1
+  KeyboardEnabled: 0
+  currentGameState: 0
   titleAnimator: {fileID: 1065369154}
   team1: []
   team2: []
@@ -1575,6 +1576,8 @@ MonoBehaviour:
     type: 2}
   playerController: {fileID: 114925745356276940, guid: ec98fdcac0522cc4ab7529e1f4595748,
     type: 2}
+  currentGame: {fileID: 0}
+  currentRound: {fileID: 0}
 --- !u!4 &1094830701
 Transform:
   m_ObjectHideFlags: 0
@@ -1894,6 +1897,14 @@ MonoBehaviour:
   - {r: 0.8867924, g: 0.85119265, b: 0, a: 1}
   - {r: 1, g: 0.9904717, b: 0.5235849, a: 1}
   - {r: 0.735849, g: 0.61051047, b: 0.1492524, a: 1}
+  lobbyRespawnTime: 1.5
+  respawnInvulnerabilityPeriod: 1
+  timeForQuickThrowRecharge: 10
+  throwSpeed: 50
+  quickThrowSpeed: 0.8
+  FULL_POWER_TIME: 1.5
+  minThrowPower: 5
+  curveInfluence: 200
 --- !u!4 &1638420462
 Transform:
   m_ObjectHideFlags: 0
@@ -2252,6 +2263,8 @@ MonoBehaviour:
   swipeOut: {fileID: 8300000, guid: d12ead25246e117408e089ecf5b7ed39, type: 3}
   pop: {fileID: 8300000, guid: f4db8892a97f1974eb6f1aaa1ebc909b, type: 3}
   error: {fileID: 8300000, guid: fb67c5d0b5c7e29428f14547ead99acf, type: 3}
+  explosion: {fileID: 8300000, guid: 69767cc15b1ae47958eda3b95a2a87fc, type: 3}
+  gunshot: {fileID: 8300000, guid: 8fac20daa52314366a2b8c4146e75314, type: 3}
 --- !u!4 &1886006640
 Transform:
   m_ObjectHideFlags: 0

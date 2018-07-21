@@ -29,6 +29,16 @@ public class Ball : MonoBehaviour {
     public Animator animator;
     public GameObject trail;
 
+    public TrailRenderer multiTrail;
+    public TrailRenderer multiTrailInstance;
+
+    public List<PlayerController> playersHitThisThrow = new List<PlayerController>();
+    public bool firstHit = false;
+
+    public float rightCurve = 0f;
+    public float leftCurve = 0f;
+    private float throwPowerLevel;
+
     private const float MAX_BALL_AIRTIME = 1.5f;
 
     private void Awake()
@@ -44,6 +54,8 @@ public class Ball : MonoBehaviour {
     {
         if(currentBallState == BallState.Thrown)
         {
+            //only allow curving before anything has been hit
+            if(!firstHit) ApplyCurve();
             if(Time.time > (timeThrown + throwTimeout))
             {
                 SetToIdle();
@@ -55,6 +67,25 @@ public class Ball : MonoBehaviour {
         }
 
         if(transform.localScale != initialScale && currentBallState != BallState.Carry) transform.localScale = initialScale;
+    }
+
+    private void ApplyCurve()
+    {
+        rightCurve = Input.GetAxis(lastThrownBy.playerController.xboxController.rt);
+        leftCurve = Input.GetAxis(lastThrownBy.playerController.xboxController.lt);
+
+#if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+        rightCurve = rightCurve.Remap(-1, 1, 0, 1);
+        leftCurve = leftCurve.Remap(-1, 1, 0, 1);
+#endif
+        float curveValue = (rightCurve - leftCurve) * GameManager.instance.gamePreferences.curveInfluence;
+        curveValue *= throwPowerLevel;
+        curveValue *= -1;
+
+        Vector2 curveVector = new Vector2(-rigidbody2D.velocity.y, rigidbody2D.velocity.x);
+        curveVector.Normalize();
+
+        rigidbody2D.AddForce(curveVector * curveValue);
     }
 
     private void SetBallColor(float progress)
@@ -71,7 +102,13 @@ public class Ball : MonoBehaviour {
         animator.SetTrigger("Dead");
         trail.SetActive(false);
 
+        playersHitThisThrow.Clear();
+
         lastThrownBy = null;
+        firstHit = false;
+
+        if(multiTrailInstance) multiTrailInstance.transform.SetParent(null);
+        Destroy(multiTrailInstance, 1f);
     }
 
     public void Drop()
@@ -88,7 +125,8 @@ public class Ball : MonoBehaviour {
         lastThrownBy = by;
 
         timeThrown = Time.time;
-        throwTimeout = (power / max) * MAX_BALL_AIRTIME;
+        throwPowerLevel = power / max;
+        throwTimeout = throwPowerLevel * MAX_BALL_AIRTIME;
 
         animator.SetTrigger("Throw");
         trail.SetActive(true);
@@ -98,10 +136,13 @@ public class Ball : MonoBehaviour {
         transform.SetParent(null);
         rigidbody2D.velocity = directon * power;
         currentBallState = Ball.BallState.Thrown;
+
+        multiTrailInstance =  Instantiate(multiTrail, transform);
     }
 
     public void Pickup()
     {
+        SetToIdle();
         rigidbody2D.velocity = Vector2.zero;
         rigidbody2D.isKinematic = true;
         rigidbody2D.simulated = false;
@@ -120,17 +161,25 @@ public class Ball : MonoBehaviour {
                 // playerHit is hit by the thrown ball (they are out if on other team)
                 if (lastThrownBy == playerHit.PLStat)
                 {
-                    //Debug.Log("Player hit with <color=purple>OWN</color> ball.");
                 }
                 else
                 {
-                    Debug.Log("PLAYER HIT WITH THROWN BALL");
+                    firstHit = true;
+                    if(playerHit.ReceiveHit(this))
+                    {
+                        playersHitThisThrow.Add(playerHit);
+                        if(playersHitThisThrow.Count > 1)
+                        {
+                            Debug.Log("<color=green>MULTIKILL x" + playersHitThisThrow.Count + "</color>");
+                        }
+                    }
                 }
             }
         }
         else if(collision.gameObject.GetComponent<Ball>())
         {
             // hit another ball
+            firstHit = true;
         }
         else
         {

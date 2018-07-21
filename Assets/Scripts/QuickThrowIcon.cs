@@ -12,7 +12,7 @@ public class QuickThrowIcon : MonoBehaviour
         Ready
     }
 
-    public const float TIME_FOR_FULL_CHARGE = 5f;
+
     public QuickThrowIconState state = QuickThrowIconState.Empty;
     public Image fill;
     public Image ball;
@@ -23,7 +23,7 @@ public class QuickThrowIcon : MonoBehaviour
     {
         if(state == QuickThrowIconState.Charging)
         {
-            charge = fill.fillAmount = (Time.time - chargeStartTime) / TIME_FOR_FULL_CHARGE;
+            charge = fill.fillAmount = (Time.time - chargeStartTime) / GameManager.instance.gamePreferences.timeForQuickThrowRecharge;
             if(charge >= 1f)
             {
                 FinishCharge();

@@ -13,7 +13,9 @@ public class AudioManager : MonoBehaviour {
         SwipeIn,
         SwipeOut,
         Pop,
-        Error
+        Error,
+        Explosion,
+        Gunshot
     }
 
     public AudioSource audioSource;
@@ -24,6 +26,8 @@ public class AudioManager : MonoBehaviour {
     public AudioClip swipeOut;
     public AudioClip pop;
     public AudioClip error;
+    public AudioClip explosion;
+    public AudioClip gunshot;
 
     void Start () {
         if (instance == null)
@@ -56,6 +60,12 @@ public class AudioManager : MonoBehaviour {
                 break;
             case AudioSFX.Error:
                 clipToPlay = error;
+                break;
+            case AudioSFX.Explosion:
+                clipToPlay = explosion;
+                break;
+            case AudioSFX.Gunshot:
+                clipToPlay = gunshot;
                 break;
         }
 

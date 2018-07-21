@@ -12,7 +12,9 @@ public class PlayerController : MonoBehaviour
         Carrying,
         Dashing,
         Throwing,
-        PickingUp
+        PickingUp,
+        Dead,
+        Respawning
     }
 
     public XboxController xboxController;
@@ -61,11 +63,8 @@ public class PlayerController : MonoBehaviour
     public Image throwMeterBG;
     public Image throwMeterFill;
     private float throwPower;
-    private float throwSpeed = 50f;
-    private float throwSpeedModifier = 1f;
-    private const float FULL_POWER_TIME = 1.5f;
+    public float throwSpeedModifier = 1f;
     private float throwStartTime;
-
     public List<QuickThrowIcon> quickThrowIcons = new List<QuickThrowIcon>();
 
     // controls
@@ -74,6 +73,11 @@ public class PlayerController : MonoBehaviour
     private KeyCode dropBall = KeyCode.J;
     private KeyCode pickupBall = KeyCode.Space;
     private KeyCode dash = KeyCode.O;
+
+    // death
+    private float timeOfDeath;
+    private float timeOfRespawn;
+    public GameObject explosion;
 
     void Start()
     {
@@ -100,6 +104,11 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if(currentPlayerState == PlayerState.Dead)
+        {
+            return;
+        }
+
         if (isRealPlayer && xboxController != null)
         {
             curSpeed = sprinting ? sprintSpeed : walkSpeed;
@@ -107,7 +116,7 @@ public class PlayerController : MonoBehaviour
             if (curSpeed > maxSpeed) curSpeed = maxSpeed;
 
             Vector2 analogAxis;
-            if(GameManager.instance.KeyboardEnabled)
+            if (GameManager.instance.KeyboardEnabled)
             {
                 float axisX = (Input.GetKey(KeyCode.A) ? -1 : 0) + (Input.GetKey(KeyCode.D) ? 1 : 0);
                 float axisY = (Input.GetKey(KeyCode.S) ? -1 : 0) + (Input.GetKey(KeyCode.W) ? 1 : 0);
@@ -116,11 +125,11 @@ public class PlayerController : MonoBehaviour
             else
             {
 #if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
-            analogAxis = new Vector2(Input.GetAxis(xboxController.joyLeftHori), -Input.GetAxis(xboxController.joyLeftVert));
+                analogAxis = new Vector2(Input.GetAxis(xboxController.joyLeftHori), -Input.GetAxis(xboxController.joyLeftVert));
 #else
-            analogAxis = new Vector2(Input.GetAxis(xboxController.joyLeftHori), Input.GetAxis(xboxController.joyLeftVert));
-            }
+                analogAxis = new Vector2(Input.GetAxis(xboxController.joyLeftHori), Input.GetAxis(xboxController.joyLeftVert));
 #endif
+            }
 
             //this makes sure that the character is always facing a direction
             normalizedDirection = analogAxis.normalized == Vector2.zero ? normalizedDirection : analogAxis.normalized;
@@ -146,6 +155,23 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (currentPlayerState == PlayerState.Dead)
+        {
+            if(Time.time > (timeOfDeath + GameManager.instance.gamePreferences.lobbyRespawnTime))
+            {
+                RespawnPlayer();
+            }
+            return;
+        }
+
+        if(currentPlayerState == PlayerState.Respawning)
+        {
+            if (Time.time > (timeOfRespawn + GameManager.instance.gamePreferences.respawnInvulnerabilityPeriod))
+            {
+                SetPlayerState(PlayerState.Idle);
+            }
+        }
+
         if (isRealPlayer && xboxController != null)
         {
             if(GameManager.instance.KeyboardEnabled)
@@ -185,7 +211,7 @@ public class PlayerController : MonoBehaviour
             }
             else if (Input.GetKeyUp(startThrow))
             {
-                ThrowBall(throwPower * throwSpeed);
+                ThrowBall(throwPower * GameManager.instance.gamePreferences.throwSpeed + GameManager.instance.gamePreferences.minThrowPower);
             }
         }
         else
@@ -236,7 +262,7 @@ public class PlayerController : MonoBehaviour
             }
             else if (Input.GetButtonUp(xboxController.a))
             {
-                ThrowBall(throwPower * throwSpeed);
+                ThrowBall(throwPower * GameManager.instance.gamePreferences.throwSpeed + GameManager.instance.gamePreferences.minThrowPower);
             }
         }
         else
@@ -308,7 +334,7 @@ public class PlayerController : MonoBehaviour
         {
             if (quickThrowIcons[i].state == QuickThrowIcon.QuickThrowIconState.Ready)
             {
-                if (!ballThrown && ThrowBall(1f * throwSpeed))
+                if (!ballThrown && ThrowBall(GameManager.instance.gamePreferences.quickThrowSpeed * GameManager.instance.gamePreferences.throwSpeed))
                 {
                     AudioManager.instance.PlaySFX(AudioManager.AudioSFX.SwipeIn);
                     ballThrown = true;
@@ -326,6 +352,43 @@ public class PlayerController : MonoBehaviour
         }
 
         if(!ballThrown && ballBeingHeld) AudioManager.instance.PlaySFX(AudioManager.AudioSFX.Error);
+    }
+
+    public bool ReceiveHit(Ball ball)
+    {
+        if (ball && ball.lastThrownBy.Team == plStat.Team)
+        {
+            // hitting teammate
+            return false;
+        }
+
+        if(currentPlayerState == PlayerState.Respawning)
+        {
+            return false;
+        }
+
+        DropBall();
+        GameObject exp = Instantiate(explosion, transform);
+        Destroy(exp, 1f);
+        SetPlayerState(PlayerState.Dead);
+        rigidbody2D.simulated = false;
+        timeOfDeath = Time.time;
+        GetComponent<Animator>().SetTrigger("Die");
+        AudioManager.instance.PlaySFX(AudioManager.AudioSFX.Explosion);
+        return true;
+    }
+
+    public void BallCaught(Ball ball)
+    {
+        ReceiveHit(null);
+    }
+
+    public void RespawnPlayer()
+    {
+        SetPlayerState(PlayerState.Respawning);
+        GetComponent<Animator>().SetTrigger("Respawn");
+        rigidbody2D.simulated = true;
+        timeOfRespawn = Time.time;
     }
 
     public void SetPlayerState(PlayerState ps)
@@ -353,7 +416,16 @@ public class PlayerController : MonoBehaviour
         {
             if (ball.currentBallState != Ball.BallState.Carry)
             {
-                if (ball.currentBallState == Ball.BallState.Thrown) Debug.Log("<color=orange>Caught a thrown ball!</color>");
+                if (ball.currentBallState == Ball.BallState.Thrown)
+                {
+                    if (plStat.Team != ball.lastThrownBy.Team)
+                    {
+                        //caught ball thrown by other team
+                        ball.lastThrownBy.playerController.BallCaught(ball);
+                    }
+                }
+
+                AudioManager.instance.PlaySFX(AudioManager.AudioSFX.SwipeIn);
 
                 ball.Pickup();
                 ballBeingHeld = ball;
@@ -380,7 +452,7 @@ public class PlayerController : MonoBehaviour
 
     public void PowerUpThrow()
     {
-        throwPower = Mathf.Min(((Time.time - throwStartTime) / FULL_POWER_TIME), 1f);
+        throwPower = Mathf.Min(((Time.time - throwStartTime) / GameManager.instance.gamePreferences.FULL_POWER_TIME), 1f);
         throwMeterFill.fillAmount = throwPower / 2f;
     }
 
@@ -388,7 +460,8 @@ public class PlayerController : MonoBehaviour
     {
         if (ballBeingHeld != null)
         {
-            ballBeingHeld.Throw(power, throwSpeed, normalizedDirection, plStat);
+            AudioManager.instance.PlaySFX(AudioManager.AudioSFX.SwipeOut);
+            ballBeingHeld.Throw(power, GameManager.instance.gamePreferences.throwSpeed, normalizedDirection, plStat);
             throwSpeedModifier = 1f;
             ballBeingHeld = null;
             throwPower = 0f;
