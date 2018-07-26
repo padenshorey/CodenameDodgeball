@@ -110,6 +110,9 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        previousVelocity = rigidbody2D.velocity;
+        previousVelocity.Normalize();
+
         if (isRealPlayer && xboxController != null)
         {
             curSpeed = sprinting ? sprintSpeed : walkSpeed;
@@ -152,7 +155,18 @@ public class PlayerController : MonoBehaviour
 
             characterPlayer.eulerAngles = new Vector3(0, 0, rotationAngleRelative);
         }
+
+        float xDif = previousVelocity.x - rigidbody2D.velocity.normalized.x;
+        float yDif = previousVelocity.y - rigidbody2D.velocity.normalized.y;
+
+        float difToCheck  = 1.2f;
+        if(xDif < -difToCheck || yDif < -difToCheck || xDif > difToCheck || yDif > difToCheck)
+        {
+            GetComponent<AudioSource>().PlayOneShot(AudioManager.instance.GetSqueak());
+        }
     }
+
+    private Vector3 previousVelocity;
 
     private void Update()
     {

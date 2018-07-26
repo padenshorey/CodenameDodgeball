@@ -53,6 +53,7 @@ public class DodgeballGame : MonoBehaviour
                     for (int j = 0; j < missingPlayers[i]; j++)
                     {
                         //TODO: add player bot to team i
+                        Debug.Log("<color=purple>Adding Bot to Team</color>");
                     }
                 }
             }
@@ -120,8 +121,11 @@ public class DodgeballGame : MonoBehaviour
             //Debug.Log("<color=green>Starting Game in: " + ((roundStartTime + GameManager.instance.gamePreferences.countdownDuration) - Time.time).ToString() + "</color>");
             if (Time.time > (roundStartTime + secondCounter))
             {
+                int secondsLeft = (int)(GameManager.instance.gamePreferences.countdownDuration - secondCounter);
+
                 secondCounter++;
                 AudioManager.instance.PlaySFX(AudioManager.AudioSFX.GongSmall);
+                Spawner.instance.SpawnCountDigit(secondsLeft == 0 ? "GO!" : secondsLeft.ToString(), 1.5f);
             }
 
             if (Time.time > (roundStartTime + GameManager.instance.gamePreferences.countdownDuration))
@@ -223,14 +227,14 @@ public class DodgeballGame : MonoBehaviour
         //float yPosition = (teamStart.position.y + teamEnd.position.y) / 2f;
         float spawnRangeMagnitude = Vector2.Distance(teamStart.position, teamEnd.position);
 
-        Debug.Log("Distance between start and end: " + spawnRangeMagnitude.ToString());
+        //Debug.Log("Distance between start and end: " + spawnRangeMagnitude.ToString());
 
         float numberINeed = (spawnRangeMagnitude / (teamCount + 1));
-        Debug.Log("Padding: " + numberINeed.ToString());
+        //Debug.Log("Padding: " + numberINeed.ToString());
         numberINeed *= (currentPlayer + 1);
-        Debug.Log("Current Player (" + currentPlayer + ")'s Position Y: " + numberINeed.ToString());
+        //Debug.Log("Current Player (" + currentPlayer + ")'s Position Y: " + numberINeed.ToString());
         numberINeed += teamEnd.position.y;
-        Debug.Log("Adjusted Player (" + currentPlayer + ")'s Position Y: " + numberINeed.ToString());
+        //Debug.Log("Adjusted Player (" + currentPlayer + ")'s Position Y: " + numberINeed.ToString());
 
         return new Vector2(teamStart.position.x, numberINeed);
     }

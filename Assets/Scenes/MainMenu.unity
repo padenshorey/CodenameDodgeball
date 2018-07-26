@@ -2206,6 +2206,7 @@ MonoBehaviour:
   KeyboardEnabled: 0
   currentGameState: 0
   titleAnimator: {fileID: 1065369154}
+  titleUi: {fileID: 1065369150}
   team1: []
   team2: []
   team1Num: {fileID: 517961085}
@@ -2781,7 +2782,7 @@ MonoBehaviour:
   curveInfluence: 200
   emojiCooldown: 0.25
   minBallCount: 3
-  countdownDuration: 5
+  countdownDuration: 6
 --- !u!4 &1638420462
 Transform:
   m_ObjectHideFlags: 0
@@ -3216,6 +3217,9 @@ MonoBehaviour:
   error: {fileID: 8300000, guid: fb67c5d0b5c7e29428f14547ead99acf, type: 3}
   explosion: {fileID: 8300000, guid: 69767cc15b1ae47958eda3b95a2a87fc, type: 3}
   gunshot: {fileID: 8300000, guid: 8fac20daa52314366a2b8c4146e75314, type: 3}
+  shoeSqueaks:
+  - {fileID: 8300000, guid: ff7f66a3afe0deb4ea54d4a6425830b6, type: 3}
+  - {fileID: 8300000, guid: 6f0c4ed42c199774b8091e2cf7cb73cc, type: 3}
   gongSmall: {fileID: 8300000, guid: 1332869e627dc48c6b8f95e84c8071e5, type: 3}
   gongBig: {fileID: 8300000, guid: 100f5b4e18e914b9fb6a7164c2f013a5, type: 3}
 --- !u!4 &1886006640
@@ -3492,6 +3496,8 @@ MonoBehaviour:
   popupCanvas: {fileID: 114101064566010700, guid: ac2d7b100257446c5a4aafcf1c7bd073,
     type: 2}
   screenWipe: {fileID: 114091844808685594, guid: 6826789cbc11b45639129697b591c53d,
+    type: 2}
+  countDigit: {fileID: 114449561196321744, guid: e6f0a8d18484a1548a2762452db4c55a,
     type: 2}
 --- !u!4 &2026975524
 Transform:

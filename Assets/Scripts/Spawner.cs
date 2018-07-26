@@ -38,4 +38,12 @@ public class Spawner : MonoBehaviour {
             sw.Setup(lifespan, message);
         }
     }
+
+    public CountdownDigit countDigit;
+
+    public void SpawnCountDigit(string textToWrite, float lifespan)
+    {
+        CountdownDigit cd = Instantiate(countDigit);
+        cd.Setup(textToWrite, lifespan);
+    }
 }

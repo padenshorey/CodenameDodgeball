@@ -31,6 +31,8 @@ public class AudioManager : MonoBehaviour {
     public AudioClip explosion;
     public AudioClip gunshot;
 
+    public AudioClip[] shoeSqueaks;
+
     public AudioClip gongSmall;
     public AudioClip gongBig;
 
@@ -43,6 +45,11 @@ public class AudioManager : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
     }
 	
+    public AudioClip GetSqueak()
+    {
+        return shoeSqueaks[(int)Mathf.Floor(Random.Range(0, shoeSqueaks.Length))];
+    }
+
     public void PlaySFX(AudioSFX sfx)
     {
         AudioClip clipToPlay = null;

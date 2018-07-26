@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     public GameState currentGameState = GameState.Lobby;
 
     public Animator titleAnimator;
+    public GameObject titleUi;
 
     public List<PlayerStat> team1;
     public List<PlayerStat> team2;
@@ -131,6 +132,7 @@ public class GameManager : MonoBehaviour
         // TODO: for now it just starts a game based on the max players on one team
         currentGameState = GameState.Playing;
         gameElements.SetActive(true);
+        titleUi.SetActive(false);
         currentGame = Instantiate(dodgeballGamePrefab);
         currentGame.Setup(5, (DodgeballGame.GameType)Mathf.Max(team1.Count, team2.Count), team1, team2);
     }
@@ -139,6 +141,8 @@ public class GameManager : MonoBehaviour
     {
         currentGameState = GameState.Lobby;
         gameElements.SetActive(false);
+        titleUi.SetActive(true);
+        titleAnimator.SetTrigger("SlideUp");
         Destroy(currentGame);
         currentGame = null;
         currentRound = null;
