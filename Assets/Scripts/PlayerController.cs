@@ -296,19 +296,19 @@ public class PlayerController : MonoBehaviour
             plStat.DoEmoji(3);
         }
 #elif UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-        if (Input.GetAxis(xboxController.dpadVert > 0.98))
+        if (Input.GetAxis(xboxController.dpadVert) > 0.98f)
         {
             plStat.DoEmoji(0);
         }
-        else if (Input.GetAxis(xboxController.dpadVert < -0.98))
+        else if (Input.GetAxis(xboxController.dpadVert) < -0.98f)
         {
             plStat.DoEmoji(1);
         }
-        else if (Input.GetAxis(xboxController.dpadHori > 0.98)))
+        else if (Input.GetAxis(xboxController.dpadHori) > 0.98f)
         {
             plStat.DoEmoji(2);
         }
-        else if (Input.GetAxis(xboxController.dpadHori < -0.98))
+        else if (Input.GetAxis(xboxController.dpadHori) < -0.98f)
         {
             plStat.DoEmoji(3);
         }
@@ -424,10 +424,9 @@ public class PlayerController : MonoBehaviour
         ReceiveHit(null);
     }
 
-    public void SetPlayerPosition(Vector2 playerPosition)
+    public void SetPlayerPosition(Vector3 playerPosition)
     {
-        transform.position = new Vector3(playerPosition.x, playerPosition.y, transform.position.z);
-        transform.LookAt(GameManager.instance.middleOfCourt);
+        transform.position = playerPosition;
         rigidbody2D.velocity = Vector2.zero;
     }
 

@@ -22,8 +22,8 @@
     public string joyRightVert = "R_YAxis_";
     public string joyRightClick = "RS_";
 
-    public string dpadVert = "Dpad_YAxis_";
-    public string dpadHori = "Dpad_XAxis_";
+    public string dpadVert = "DPad_YAxis_";
+    public string dpadHori = "DPad_XAxis_";
 
 #if UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
     public string dpadUp = "Dpad_Up_";

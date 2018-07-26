@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
 
     public GamePreferences gamePreferences;
 
+    public GameObject gameElements;
+
     public bool KeyboardEnabled = true;
 
     public GameState currentGameState = GameState.Lobby;
@@ -54,6 +56,8 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
 
         DontDestroyOnLoad(gameObject);
+
+        gameElements.SetActive(false);
     }
 
     private void TestCallback()
@@ -63,9 +67,13 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Y))
+        if (Input.GetKeyDown(KeyCode.Y) && currentGameState == GameState.Lobby)
         {
-            StartGame();
+            Spawner.instance.SpawnScreenWipe(2f, "GET READY!", StartGame);
+        }
+        else if (Input.GetKeyDown(KeyCode.U) && currentGameState == GameState.Playing)
+        {
+            Spawner.instance.SpawnScreenWipe(2f, "GAME OVER BITCH!", () => { EndGame(currentGame); });
         }
         else if (Input.GetKeyDown(KeyCode.B))
         {
@@ -122,6 +130,7 @@ public class GameManager : MonoBehaviour
     {
         // TODO: for now it just starts a game based on the max players on one team
         currentGameState = GameState.Playing;
+        gameElements.SetActive(true);
         currentGame = Instantiate(dodgeballGamePrefab);
         currentGame.Setup(5, (DodgeballGame.GameType)Mathf.Max(team1.Count, team2.Count), team1, team2);
     }
@@ -129,6 +138,8 @@ public class GameManager : MonoBehaviour
     public void EndGame(DodgeballGame game)
     {
         currentGameState = GameState.Lobby;
+        gameElements.SetActive(false);
+        Destroy(currentGame);
         currentGame = null;
         currentRound = null;
     }

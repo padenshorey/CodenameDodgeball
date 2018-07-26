@@ -31,6 +31,8 @@ public class DodgeballGame : MonoBehaviour
 
     private List<DodgeballRound> rounds = new List<DodgeballRound>();
 
+    private int secondCounter = 1;
+
     public void Setup(int rounds, GameType gType, List<PlayerStat> t1, List<PlayerStat> t2)
     {
         _roundTotal = rounds;
@@ -94,6 +96,7 @@ public class DodgeballGame : MonoBehaviour
 
     private void StartRound()
     {
+        secondCounter = 1;
         countingDown = false;
         rounds[_currentRound].StartRound();
         AudioManager.instance.PlaySFX(AudioManager.AudioSFX.GongBig);
@@ -114,9 +117,14 @@ public class DodgeballGame : MonoBehaviour
     {
         if(countingDown)
         {
-            Debug.Log("<color=green>Starting Game in: " + ((roundStartTime + GameManager.instance.gamePreferences.countdownDuration) - Time.time).ToString() + "</color>");
-            //AudioManager.instance.PlaySFX(AudioManager.AudioSFX.GongSmall);
-            if(Time.time > (roundStartTime + GameManager.instance.gamePreferences.countdownDuration))
+            //Debug.Log("<color=green>Starting Game in: " + ((roundStartTime + GameManager.instance.gamePreferences.countdownDuration) - Time.time).ToString() + "</color>");
+            if (Time.time > (roundStartTime + secondCounter))
+            {
+                secondCounter++;
+                AudioManager.instance.PlaySFX(AudioManager.AudioSFX.GongSmall);
+            }
+
+            if (Time.time > (roundStartTime + GameManager.instance.gamePreferences.countdownDuration))
             {
                 StartRound();
             }
@@ -215,12 +223,14 @@ public class DodgeballGame : MonoBehaviour
         //float yPosition = (teamStart.position.y + teamEnd.position.y) / 2f;
         float spawnRangeMagnitude = Vector2.Distance(teamStart.position, teamEnd.position);
 
-        float numberINeed = (spawnRangeMagnitude / (teamCount + 1));
-        numberINeed *= (currentPlayer + 1);
-        numberINeed -= teamStart.position.y;
+        Debug.Log("Distance between start and end: " + spawnRangeMagnitude.ToString());
 
-        //float foof = numberINeed * (currentPlayer + 1);
-        //foof += teamEnd.position.y;
+        float numberINeed = (spawnRangeMagnitude / (teamCount + 1));
+        Debug.Log("Padding: " + numberINeed.ToString());
+        numberINeed *= (currentPlayer + 1);
+        Debug.Log("Current Player (" + currentPlayer + ")'s Position Y: " + numberINeed.ToString());
+        numberINeed += teamEnd.position.y;
+        Debug.Log("Adjusted Player (" + currentPlayer + ")'s Position Y: " + numberINeed.ToString());
 
         return new Vector2(teamStart.position.x, numberINeed);
     }

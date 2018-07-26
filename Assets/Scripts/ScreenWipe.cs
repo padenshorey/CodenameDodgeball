@@ -15,6 +15,8 @@ public class ScreenWipe : MonoBehaviour
 
     private Action onScreenWipeComplete;
 
+    private bool wipeComplete = false;
+
     public void Setup(float life, string message, Action onComplete = null)
     {
         if (onComplete != null) onScreenWipeComplete = onComplete;
@@ -29,15 +31,18 @@ public class ScreenWipe : MonoBehaviour
 
     private void Update()
     {
+        if (wipeComplete) return;
+
         if (Time.time > (_spawnTime + _lifespan))
         {
+            wipeComplete = true;
             GetComponent<Animator>().SetTrigger("Hide");
+            onScreenWipeComplete.Invoke();
         }
     }
 
     public void Die()
     {
-        onScreenWipeComplete.Invoke();
         Destroy(this.gameObject);
     }
 
