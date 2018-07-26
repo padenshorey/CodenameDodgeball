@@ -14,7 +14,8 @@ public class PlayerController : MonoBehaviour
         Throwing,
         PickingUp,
         Dead,
-        Respawning
+        Respawning,
+        SettingUp
     }
 
     public XboxController xboxController;
@@ -104,7 +105,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (currentPlayerState == PlayerState.Dead)
+        if (currentPlayerState == PlayerState.Dead || currentPlayerState == PlayerState.SettingUp)
         {
             return;
         }
@@ -155,6 +156,11 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if(currentPlayerState == PlayerState.SettingUp)
+        {
+            return;
+        }
+
         if (currentPlayerState == PlayerState.Dead)
         {
             if (Time.time > (timeOfDeath + GameManager.instance.gamePreferences.lobbyRespawnTime))
@@ -416,6 +422,13 @@ public class PlayerController : MonoBehaviour
     public void BallCaught(Ball ball)
     {
         ReceiveHit(null);
+    }
+
+    public void SetPlayerPosition(Vector2 playerPosition)
+    {
+        transform.position = new Vector3(playerPosition.x, playerPosition.y, transform.position.z);
+        transform.LookAt(GameManager.instance.middleOfCourt);
+        rigidbody2D.velocity = Vector2.zero;
     }
 
     public void RespawnPlayer()

@@ -16,6 +16,7 @@ public class DodgeballGame : MonoBehaviour
     private int _roundTotal;
     private int _roundsToWin;
     private GameType _gameType;
+    public GameType CurrentGameType { get { return _gameType; }}
     private int _currentRound;
     public int CurrentRound { get { return _currentRound; } set { _currentRound = value; } }
 
@@ -25,9 +26,12 @@ public class DodgeballGame : MonoBehaviour
     private List<PlayerStat> team1;
     private List<PlayerStat> team2;
 
+    public Ball ballPrefab;
+    private List<Ball> balls = new List<Ball>();
+
     private List<DodgeballRound> rounds = new List<DodgeballRound>();
 
-    public DodgeballGame(int rounds, GameType gType, List<PlayerStat> t1, List<PlayerStat> t2)
+    public void Setup(int rounds, GameType gType, List<PlayerStat> t1, List<PlayerStat> t2)
     {
         _roundTotal = rounds;
         _roundsToWin = (int)(Mathf.Floor((float)rounds / 2f) + 1f);
@@ -44,7 +48,7 @@ public class DodgeballGame : MonoBehaviour
             {
                 for(int i = 0; i < missingPlayers.Length; i++)
                 {
-                    for (int j = 0; j < missingPlayers[i]; i++)
+                    for (int j = 0; j < missingPlayers[i]; j++)
                     {
                         //TODO: add player bot to team i
                     }
@@ -58,6 +62,8 @@ public class DodgeballGame : MonoBehaviour
 
         _currentRound = 0;
         team1Score = team2Score = 0;
+
+        StartGame();
     }
 
     private int[] MissingPlayers(GameType gType)
@@ -77,12 +83,44 @@ public class DodgeballGame : MonoBehaviour
             rounds.Add(new DodgeballRound(this, i, team1, team2));
         }
 
-        StartNextRound();
+        SetupNextRound();
     }
 
-    private void StartNextRound()
+    private void SetupNextRound()
     {
         GameManager.instance.currentRound = rounds[_currentRound].SetupRound();
+        StartTimer();
+    }
+
+    private void StartRound()
+    {
+        countingDown = false;
+        rounds[_currentRound].StartRound();
+        AudioManager.instance.PlaySFX(AudioManager.AudioSFX.GongBig);
+
+    }
+
+    public float roundStartTime;
+    private bool countingDown = false;
+
+
+    private void StartTimer()
+    {
+        roundStartTime = Time.time;
+        countingDown = true;
+    }
+
+    private void Update()
+    {
+        if(countingDown)
+        {
+            Debug.Log("<color=green>Starting Game in: " + ((roundStartTime + GameManager.instance.gamePreferences.countdownDuration) - Time.time).ToString() + "</color>");
+            //AudioManager.instance.PlaySFX(AudioManager.AudioSFX.GongSmall);
+            if(Time.time > (roundStartTime + GameManager.instance.gamePreferences.countdownDuration))
+            {
+                StartRound();
+            }
+        }
     }
 
     public void EndRound(int winningTeam)
@@ -111,7 +149,92 @@ public class DodgeballGame : MonoBehaviour
         }
 
         _currentRound++;
-        StartNextRound();
+        SetupNextRound();
+    }
+
+    public void MovePlayersToSpawn()
+    {
+        int counter = 0;
+        foreach(PlayerStat player in team1)
+        {
+            Vector2 playerSpawn = GetPlayerSpawn(GameManager.instance.team1SpawnStart, GameManager.instance.team1SpawnEnd, team1.Count, counter);
+            Vector3 playerSpawnV3 = new Vector3(playerSpawn.x, playerSpawn.y, player.transform.position.z);
+            player.playerController.SetPlayerPosition(playerSpawnV3);
+            player.playerController.SetPlayerState(PlayerController.PlayerState.SettingUp);
+            counter++;
+        }
+        counter = 0;
+        foreach (PlayerStat player in team2)
+        {
+            Vector2 playerSpawn = GetPlayerSpawn(GameManager.instance.team2SpawnStart, GameManager.instance.team2SpawnEnd, team2.Count, counter);
+            Vector3 playerSpawnV3 = new Vector3(playerSpawn.x, playerSpawn.y, player.transform.position.z);
+            player.playerController.SetPlayerPosition(playerSpawnV3);
+            player.playerController.SetPlayerState(PlayerController.PlayerState.SettingUp);
+            counter++;
+        }
+    }
+
+    public void UnlockPlayers()
+    {
+        foreach (PlayerStat player in team1)
+        {
+            player.playerController.SetPlayerState(PlayerController.PlayerState.Idle);
+        }
+        foreach (PlayerStat player in team2)
+        {
+            player.playerController.SetPlayerState(PlayerController.PlayerState.Idle);
+        }
+
+    }
+
+    public void SpawnBalls(int ballsToSpawn)
+    {   for (int i = 0; i < ballsToSpawn; i++)
+        {
+            Vector2 ballSpawn = GetBallSpawn(GameManager.instance.ballSpawnStart, GameManager.instance.ballSpawnEnd, ballsToSpawn, i);
+            Vector3 ballSpawnV3 = new Vector3(ballSpawn.x, ballSpawn.y, GameManager.instance.ballPrefab.transform.position.z);
+            Ball ball = Instantiate(GameManager.instance.ballPrefab, ballSpawnV3, Quaternion.identity);
+            balls.Add(ball);
+        }
+    }
+
+    private Vector2 GetBallSpawn(Transform ballStart, Transform ballEnd, int ballCount, int currentBall)
+    {
+        float yPosition = (ballStart.position.y + ballEnd.position.y) / 2f;
+        float spawnRangeMagnitude = ballStart.position.y - ballEnd.position.y;
+
+        float numberINeed = spawnRangeMagnitude / (ballCount + 1);
+
+        float foof = numberINeed * (currentBall + 1);
+        foof += ballEnd.position.y;
+
+        return new Vector2(ballStart.position.x, foof);
+    }
+
+    private Vector2 GetPlayerSpawn(Transform teamStart, Transform teamEnd, int teamCount, int currentPlayer)
+    {
+        //float yPosition = (teamStart.position.y + teamEnd.position.y) / 2f;
+        float spawnRangeMagnitude = Vector2.Distance(teamStart.position, teamEnd.position);
+
+        float numberINeed = (spawnRangeMagnitude / (teamCount + 1));
+        numberINeed *= (currentPlayer + 1);
+        numberINeed -= teamStart.position.y;
+
+        //float foof = numberINeed * (currentPlayer + 1);
+        //foof += teamEnd.position.y;
+
+        return new Vector2(teamStart.position.x, numberINeed);
+    }
+
+    public void RemoveAllBalls()
+    {
+        Ball[] allBalls = FindObjectsOfType<Ball>();
+
+        foreach (Ball b in allBalls)
+        {
+            Destroy(b.gameObject);
+        }
+
+        balls.Clear();
     }
 
     private void EndGame(int winningTeam)

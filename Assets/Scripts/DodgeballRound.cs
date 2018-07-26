@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DodgeballRound : MonoBehaviour {
+public class DodgeballRound {
 
     private DodgeballGame _dbGame;
     private int _roundnumber;
@@ -18,19 +18,29 @@ public class DodgeballRound : MonoBehaviour {
         team2 = t2;
     }
 
+    private void SpawnBalls()
+    {
+        int ballsToSpawn = Mathf.Max((int)_dbGame.CurrentGameType - 1, GameManager.instance.gamePreferences.minBallCount);
+        _dbGame.RemoveAllBalls();
+        _dbGame.SpawnBalls(ballsToSpawn);
+    }
+
     public DodgeballRound SetupRound()
     {
         // move players to spawn points and freeze
+        _dbGame.MovePlayersToSpawn();
 
         // move/spawn balls to spawn points
+        SpawnBalls();
 
         // start countdown
         return this;
     }
 
-    public void StartGame()
+    public void StartRound()
     {
         // un freeze players
+        _dbGame.UnlockPlayers();
     }
 
     public void EndRound(int winningTeam)

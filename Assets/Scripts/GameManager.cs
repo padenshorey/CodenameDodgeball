@@ -26,12 +26,25 @@ public class GameManager : MonoBehaviour
     public Text team1Num;
     public Text team2Num;
 
+    public Transform team1SpawnStart;
+    public Transform team2SpawnStart;
+    public Transform ballSpawnStart;
+
+    public Transform team1SpawnEnd;
+    public Transform team2SpawnEnd;
+    public Transform ballSpawnEnd;
+
+
     public Ball ballPrefab;
 
     public PlayerController playerController;
 
+    public DodgeballGame dodgeballGamePrefab;
+
     public DodgeballGame currentGame;
     public DodgeballRound currentRound;
+
+    public Transform middleOfCourt;
 
     void Start()
     {
@@ -50,7 +63,11 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.B))
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            StartGame();
+        }
+        else if (Input.GetKeyDown(KeyCode.B))
         {
             SpawnNewPlayer(-999, true);
         }
@@ -105,7 +122,8 @@ public class GameManager : MonoBehaviour
     {
         // TODO: for now it just starts a game based on the max players on one team
         currentGameState = GameState.Playing;
-        currentGame = new DodgeballGame(5, (DodgeballGame.GameType)Mathf.Max(team1.Count, team2.Count), team1, team2);
+        currentGame = Instantiate(dodgeballGamePrefab);
+        currentGame.Setup(5, (DodgeballGame.GameType)Mathf.Max(team1.Count, team2.Count), team1, team2);
     }
 
     public void EndGame(DodgeballGame game)
@@ -160,9 +178,12 @@ public class GameManager : MonoBehaviour
         return pStat;
     }
 
-    private void SpawnBall()
+    public List<Ball> ballsInPlay = new List<Ball>();
+
+    public void SpawnBall()
     {
         Ball ball = Instantiate(ballPrefab, GetSpawnPosition(), Quaternion.identity);
+        ballsInPlay.Add(ball);
         Vector2 target = new Vector2(Random.Range(-0.15f, 0.15f), Random.Range(-0.15f, 0.15f));
         Vector2 v = (target - new Vector2(ball.transform.position.x, ball.transform.position.y)).normalized;
         ball.GetComponent<Rigidbody2D>().velocity = v * Random.Range(25f, 35f);

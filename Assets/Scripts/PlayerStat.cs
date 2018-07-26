@@ -76,5 +76,4 @@ public class PlayerStat : MonoBehaviour
         return new Color(red, green, blue);
     }
 
-
 }

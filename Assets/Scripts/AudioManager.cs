@@ -15,7 +15,9 @@ public class AudioManager : MonoBehaviour {
         Pop,
         Error,
         Explosion,
-        Gunshot
+        Gunshot,
+        GongSmall,
+        GongBig
     }
 
     public AudioSource audioSource;
@@ -28,6 +30,9 @@ public class AudioManager : MonoBehaviour {
     public AudioClip error;
     public AudioClip explosion;
     public AudioClip gunshot;
+
+    public AudioClip gongSmall;
+    public AudioClip gongBig;
 
     void Start () {
         if (instance == null)
@@ -66,6 +71,12 @@ public class AudioManager : MonoBehaviour {
                 break;
             case AudioSFX.Gunshot:
                 clipToPlay = gunshot;
+                break;
+            case AudioSFX.GongSmall:
+                clipToPlay = gongSmall;
+                break;
+            case AudioSFX.GongBig:
+                clipToPlay = gongBig;
                 break;
         }
 

@@ -21,6 +21,10 @@ public class GamePreferences :MonoBehaviour
     public float curveInfluence = 1000f;
     public float emojiCooldown = 1f;
 
+    public int minBallCount = 3;
+
+    public float countdownDuration = 5f;
+
     private void Awake()
     {
         minThrowPower = throwSpeed / 5f;
