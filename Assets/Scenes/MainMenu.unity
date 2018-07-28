@@ -411,6 +411,7 @@ GameObject:
   - component: {fileID: 184442483}
   - component: {fileID: 184442485}
   - component: {fileID: 184442484}
+  - component: {fileID: 184442486}
   m_Layer: 0
   m_Name: Scoreboard
   m_TagString: Untagged
@@ -427,7 +428,11 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 4.35, z: 0}
   m_LocalScale: {x: 0.40004882, y: 0.40004876, z: 0.40004876}
-  m_Children: []
+  m_Children:
+  - {fileID: 798850731}
+  - {fileID: 497293753}
+  - {fileID: 315193822}
+  - {fileID: 1146889033}
   m_Father: {fileID: 456468426}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -501,6 +506,23 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!114 &184442486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 184442482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1630e1b2f2a6a46f490a39bafa5fd130, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team1_1: {fileID: 798850732}
+  team1_2: {fileID: 497293754}
+  team2_1: {fileID: 1146889034}
+  team2_2: {fileID: 315193823}
+  team1Score: 0
+  team2Score: 0
 --- !u!1 &247673502
 GameObject:
   m_ObjectHideFlags: 0
@@ -593,11 +615,11 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 315193821}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.641, y: 4.318, z: -1.29}
-  m_LocalScale: {x: 0.052498575, y: 0.052498586, z: 0.052498586}
+  m_LocalPosition: {x: 1.6023043, y: -0.07999041, z: -3.2246068}
+  m_LocalScale: {x: 0.13123041, y: 0.13123047, z: 0.13123047}
   m_Children: []
-  m_Father: {fileID: 456468426}
-  m_RootOrder: 7
+  m_Father: {fileID: 184442483}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!102 &315193823
 TextMesh:
@@ -1077,10 +1099,6 @@ Transform:
   - {fileID: 1861514101}
   - {fileID: 1403046242}
   - {fileID: 184442483}
-  - {fileID: 798850731}
-  - {fileID: 497293753}
-  - {fileID: 315193822}
-  - {fileID: 1146889033}
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1136,11 +1154,11 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 497293752}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.21, y: 4.318, z: -1.29}
-  m_LocalScale: {x: 0.052498575, y: 0.052498586, z: 0.052498586}
+  m_LocalPosition: {x: -0.5249359, y: -0.07999041, z: -3.2246068}
+  m_LocalScale: {x: 0.13123041, y: 0.13123047, z: 0.13123047}
   m_Children: []
-  m_Father: {fileID: 456468426}
-  m_RootOrder: 6
+  m_Father: {fileID: 184442483}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!102 &497293754
 TextMesh:
@@ -1779,11 +1797,11 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 798850730}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.641, y: 4.318, z: -1.29}
-  m_LocalScale: {x: 0.052498575, y: 0.052498586, z: 0.052498586}
+  m_LocalPosition: {x: -1.6023043, y: -0.07999041, z: -3.2246068}
+  m_LocalScale: {x: 0.13123041, y: 0.13123047, z: 0.13123047}
   m_Children: []
-  m_Father: {fileID: 456468426}
-  m_RootOrder: 5
+  m_Father: {fileID: 184442483}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!102 &798850732
 TextMesh:
@@ -1953,6 +1971,34 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 843868480}
+--- !u!1 &848675781
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 848675782}
+  m_Layer: 8
+  m_Name: BenchEnd
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &848675782
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 848675781}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -2.04, y: 0.20999977, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1403046242}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &873109714
 GameObject:
   m_ObjectHideFlags: 0
@@ -2217,6 +2263,9 @@ MonoBehaviour:
   team1SpawnEnd: {fileID: 494690593}
   team2SpawnEnd: {fileID: 1016802444}
   ballSpawnEnd: {fileID: 594066279}
+  team1Bench: {fileID: 1568215243}
+  team2Bench: {fileID: 848675782}
+  scoreboard: {fileID: 184442486}
   ballPrefab: {fileID: 114458924623012146, guid: 773bfb1e71917b0488dc23e631c32982,
     type: 2}
   playerController: {fileID: 114925745356276940, guid: ec98fdcac0522cc4ab7529e1f4595748,
@@ -2263,11 +2312,11 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1146889032}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.21, y: 4.318, z: -1.29}
-  m_LocalScale: {x: 0.052498575, y: 0.052498586, z: 0.052498586}
+  m_LocalPosition: {x: 0.5249359, y: -0.07999041, z: -3.2246068}
+  m_LocalScale: {x: 0.13123041, y: 0.13123047, z: 0.13123047}
   m_Children: []
-  m_Father: {fileID: 456468426}
-  m_RootOrder: 8
+  m_Father: {fileID: 184442483}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!102 &1146889034
 TextMesh:
@@ -2509,7 +2558,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1403046242}
   - component: {fileID: 1403046243}
-  m_Layer: 0
+  - component: {fileID: 1403046244}
+  m_Layer: 8
   m_Name: BenchTeam2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2525,7 +2575,8 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 4.67, y: 4.38, z: 0}
   m_LocalScale: {x: 0.7609808, y: 0.7609807, z: 0.7609807}
-  m_Children: []
+  m_Children:
+  - {fileID: 848675782}
   m_Father: {fileID: 456468426}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2574,6 +2625,31 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!61 &1403046244
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1403046241}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 1.92, z: 0, w: 1.9399999}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 5.12, y: 5.12}
+    newSize: {x: 5.12, y: 5.12}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 5.12, y: 1.25}
+  m_EdgeRadius: 0
 --- !u!1 &1433539712
 GameObject:
   m_ObjectHideFlags: 0
@@ -2737,6 +2813,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   team: 1
   slam: {fileID: 0}
+--- !u!1 &1568215242
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1568215243}
+  m_Layer: 8
+  m_Name: BenchEnd
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1568215243
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1568215242}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.04, y: 0.21, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1861514101}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1638420460
 GameObject:
   m_ObjectHideFlags: 0
@@ -2773,6 +2877,7 @@ MonoBehaviour:
   - {r: 0.25579336, g: 0.20901564, b: 0.7264151, a: 1}
   - {r: 0.1490196, g: 0.5556097, b: 0.7372549, a: 1}
   lobbyRespawnTime: 1.5
+  gameRespawnTime: 1
   respawnInvulnerabilityPeriod: 1
   timeForQuickThrowRecharge: 10
   throwSpeed: 50
@@ -3019,7 +3124,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1861514101}
   - component: {fileID: 1861514102}
-  m_Layer: 0
+  - component: {fileID: 1861514103}
+  m_Layer: 8
   m_Name: BenchTeam1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3035,7 +3141,8 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -4.67, y: 4.38, z: 0}
   m_LocalScale: {x: 0.7609808, y: 0.7609807, z: 0.7609807}
-  m_Children: []
+  m_Children:
+  - {fileID: 1568215243}
   m_Father: {fileID: 456468426}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3084,6 +3191,31 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
+--- !u!61 &1861514103
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1861514100}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 1.92, z: 0, w: 1.9399999}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 5.12, y: 5.12}
+    newSize: {x: 5.12, y: 5.12}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 5.12, y: 1.25}
+  m_EdgeRadius: 0
 --- !u!1 &1886006637
 GameObject:
   m_ObjectHideFlags: 0
@@ -3217,6 +3349,7 @@ MonoBehaviour:
   error: {fileID: 8300000, guid: fb67c5d0b5c7e29428f14547ead99acf, type: 3}
   explosion: {fileID: 8300000, guid: 69767cc15b1ae47958eda3b95a2a87fc, type: 3}
   gunshot: {fileID: 8300000, guid: 8fac20daa52314366a2b8c4146e75314, type: 3}
+  tick: {fileID: 8300000, guid: 3ff683fb88b104435827fb9d171b6282, type: 3}
   shoeSqueaks:
   - {fileID: 8300000, guid: ff7f66a3afe0deb4ea54d4a6425830b6, type: 3}
   - {fileID: 8300000, guid: 6f0c4ed42c199774b8091e2cf7cb73cc, type: 3}

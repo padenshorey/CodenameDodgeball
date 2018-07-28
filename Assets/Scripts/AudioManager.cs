@@ -17,7 +17,8 @@ public class AudioManager : MonoBehaviour {
         Explosion,
         Gunshot,
         GongSmall,
-        GongBig
+        GongBig,
+        Tick
     }
 
     public AudioSource audioSource;
@@ -30,6 +31,7 @@ public class AudioManager : MonoBehaviour {
     public AudioClip error;
     public AudioClip explosion;
     public AudioClip gunshot;
+    public AudioClip tick;
 
     public AudioClip[] shoeSqueaks;
 
@@ -84,6 +86,9 @@ public class AudioManager : MonoBehaviour {
                 break;
             case AudioSFX.GongBig:
                 clipToPlay = gongBig;
+                break;
+            case AudioSFX.Tick:
+                clipToPlay = tick;
                 break;
         }
 

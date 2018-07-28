@@ -26,6 +26,9 @@ public class DodgeballGame : MonoBehaviour
     private List<PlayerStat> team1;
     private List<PlayerStat> team2;
 
+    public List<PlayerStat> bench1;
+    public List<PlayerStat> bench2;
+
     public Ball ballPrefab;
     private List<Ball> balls = new List<Ball>();
 
@@ -133,30 +136,78 @@ public class DodgeballGame : MonoBehaviour
                 StartRound();
             }
         }
+        else if(!countingDown && _gameType != GameType.Pratice)
+        {
+            // in game
+        }
+    }
+
+    public int CheckForEndRound()
+    {
+        bool teamMemberAlive = false;
+        foreach(PlayerStat p in team1)
+        {
+            if(p.playerController.CurrentPlayerState != PlayerController.PlayerState.OnBench && p.playerController.CurrentPlayerState != PlayerController.PlayerState.Dead)
+            {
+                teamMemberAlive = true;
+            }
+        }
+
+        if(!teamMemberAlive)
+        {
+            //team 2 wins
+            return 2;
+        }
+
+        teamMemberAlive = false;
+
+        foreach (PlayerStat p in team2)
+        {
+            if (p.playerController.CurrentPlayerState != PlayerController.PlayerState.OnBench && p.playerController.CurrentPlayerState != PlayerController.PlayerState.Dead)
+            {
+                teamMemberAlive = true;
+            }
+        }
+
+        if (!teamMemberAlive)
+        {
+            //team 2 wins
+            return 1;
+        }
+
+        return 0;
     }
 
     public void EndRound(int winningTeam)
     {
-        if(winningTeam == 0)
+        rounds[_currentRound].EndRound(winningTeam);
+
+        if(winningTeam == 1)
         {
             team1Score++;
         }
-        else if(winningTeam == 1)
+        else if(winningTeam == 2)
         {
             team2Score++;
         }
+
+        GameManager.instance.scoreboard.UpdateScore(team1Score, team2Score);
 
         if(team1Score == _roundsToWin || team2Score == _roundsToWin)
         {
             if(team1Score == _roundsToWin)
             {
                 // TEAM 1 WINS
-                EndGame(0);
+                Spawner.instance.SpawnScreenWipe(2f, "TEAM 1 WINS!", () => { EndGame(0); });
+                _currentRound = 0;
+                return;
             }
             else
             {
                 // TEAM 2 WINS
-                EndGame(1);
+                Spawner.instance.SpawnScreenWipe(2f, "TEAM 2 WINS!", () => { EndGame(1); });
+                _currentRound = 0;
+                return;
             }
         }
 
@@ -173,6 +224,8 @@ public class DodgeballGame : MonoBehaviour
             Vector3 playerSpawnV3 = new Vector3(playerSpawn.x, playerSpawn.y, player.transform.position.z);
             player.playerController.SetPlayerPosition(playerSpawnV3);
             player.playerController.SetPlayerState(PlayerController.PlayerState.SettingUp);
+            player.playerController.GetComponent<Animator>().SetTrigger("Idle");
+            player.playerController.Rigidbody2D.simulated = true;
             counter++;
         }
         counter = 0;
@@ -182,6 +235,8 @@ public class DodgeballGame : MonoBehaviour
             Vector3 playerSpawnV3 = new Vector3(playerSpawn.x, playerSpawn.y, player.transform.position.z);
             player.playerController.SetPlayerPosition(playerSpawnV3);
             player.playerController.SetPlayerState(PlayerController.PlayerState.SettingUp);
+            player.playerController.GetComponent<Animator>().SetTrigger("Idle");
+            player.playerController.Rigidbody2D.simulated = true;
             counter++;
         }
     }
@@ -243,6 +298,16 @@ public class DodgeballGame : MonoBehaviour
     {
         Ball[] allBalls = FindObjectsOfType<Ball>();
 
+        foreach(PlayerStat p in team1)
+        {
+            p.playerController.ballInZone.Clear();
+        }
+
+        foreach (PlayerStat p in team2)
+        {
+            p.playerController.ballInZone.Clear();
+        }
+
         foreach (Ball b in allBalls)
         {
             Destroy(b.gameObject);
@@ -254,6 +319,14 @@ public class DodgeballGame : MonoBehaviour
     private void EndGame(int winningTeam)
     {
         Debug.Log("Team " + (winningTeam+1).ToString() + " Wins!");
+        foreach(PlayerStat p in team1)
+        {
+            p.playerController.RespawnPlayer();
+        }
+        foreach (PlayerStat p in team2)
+        {
+            p.playerController.RespawnPlayer();
+        }
         GameManager.instance.EndGame(this);
     }
 }

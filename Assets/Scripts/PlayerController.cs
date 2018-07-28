@@ -15,7 +15,8 @@ public class PlayerController : MonoBehaviour
         PickingUp,
         Dead,
         Respawning,
-        SettingUp
+        SettingUp,
+        OnBench
     }
 
     public XboxController xboxController;
@@ -32,9 +33,10 @@ public class PlayerController : MonoBehaviour
 
     private bool sprinting = false;
 
-    private PlayerStat plStat;
+    public PlayerStat plStat;
     public PlayerStat PLStat { get { return plStat; } }
     private Rigidbody2D rigidbody2D;
+    public Rigidbody2D Rigidbody2D { get { return rigidbody2D; } set { rigidbody2D = value; }}
 
     private Vector2 normalizedDirection;
 
@@ -45,6 +47,7 @@ public class PlayerController : MonoBehaviour
 
     // states
     private PlayerState currentPlayerState;
+    public PlayerState CurrentPlayerState { get { return currentPlayerState; }}
     private PlayerState previousPlayerState = PlayerState.Idle;
 
     // dash
@@ -93,6 +96,8 @@ public class PlayerController : MonoBehaviour
         sprintSpeed = walkSpeed + (walkSpeed / 2);
 
         SetPlayerState(PlayerState.Idle);
+
+        Physics2D.IgnoreLayerCollision(9, 8);
 
         throwMeterBG.enabled = false;
         throwMeterFill.enabled = false;
@@ -145,7 +150,15 @@ public class PlayerController : MonoBehaviour
 
             Vector2 movementLerp = Vector2.Lerp(new Vector2(rigidbody2D.velocity.x, rigidbody2D.velocity.y), analogAxis * curSpeed * throwSpeedModifier, lerpSpeed);
 
-            rigidbody2D.velocity = movementLerp;
+            if(currentPlayerState == PlayerState.OnBench)
+            {
+                rigidbody2D.velocity = Vector2.zero;
+            }
+            else
+            {
+                rigidbody2D.velocity = movementLerp;
+            }
+
 
             Vector2 staticVector = new Vector2(0f, 1f);
 
@@ -156,11 +169,12 @@ public class PlayerController : MonoBehaviour
             characterPlayer.eulerAngles = new Vector3(0, 0, rotationAngleRelative);
         }
 
-        float xDif = previousVelocity.x - rigidbody2D.velocity.normalized.x;
-        float yDif = previousVelocity.y - rigidbody2D.velocity.normalized.y;
+        float distance = Vector2.Distance(previousVelocity.normalized, rigidbody2D.velocity.normalized);
+        //float xDif = previousVelocity.x - rigidbody2D.velocity.normalized.x;
+        //float yDif = previousVelocity.y - rigidbody2D.velocity.normalized.y;
 
-        float difToCheck  = 1.2f;
-        if(xDif < -difToCheck || yDif < -difToCheck || xDif > difToCheck || yDif > difToCheck)
+        float difToCheck  = 1f;
+        if(distance > difToCheck)
         {
             GetComponent<AudioSource>().PlayOneShot(AudioManager.instance.GetSqueak());
         }
@@ -177,9 +191,22 @@ public class PlayerController : MonoBehaviour
 
         if (currentPlayerState == PlayerState.Dead)
         {
-            if (Time.time > (timeOfDeath + GameManager.instance.gamePreferences.lobbyRespawnTime))
+            if(GameManager.instance.currentGame != null)
             {
-                RespawnPlayer();
+                if (GameManager.instance.currentGame.CurrentGameType == DodgeballGame.GameType.Pratice)
+                {
+                    if (Time.time > (timeOfDeath + GameManager.instance.gamePreferences.lobbyRespawnTime))
+                    {
+                        RespawnPlayer();
+                    }
+                }
+                else
+                {
+                    if (Time.time > (timeOfDeath + GameManager.instance.gamePreferences.gameRespawnTime))
+                    {
+                        RespawnPlayerOnBench();
+                    }
+                }
             }
             return;
         }
@@ -417,7 +444,7 @@ public class PlayerController : MonoBehaviour
             return false;
         }
 
-        if(currentPlayerState == PlayerState.Respawning)
+        if(currentPlayerState == PlayerState.Respawning || currentPlayerState == PlayerState.Dead || currentPlayerState == PlayerState.OnBench)
         {
             return false;
         }
@@ -430,12 +457,56 @@ public class PlayerController : MonoBehaviour
         timeOfDeath = Time.time;
         GetComponent<Animator>().SetTrigger("Die");
         AudioManager.instance.PlaySFX(AudioManager.AudioSFX.Explosion);
+
+        if (GameManager.instance.currentGame)
+        {
+            if (GameManager.instance.currentGame.CurrentGameType != DodgeballGame.GameType.Pratice)
+            {
+                CheckRoundEnd();
+                if (plStat.Team == 1)
+                {
+                    GameManager.instance.currentGame.bench1.Add(this.plStat);
+                }
+                else if (plStat.Team == 2)
+                {
+                    GameManager.instance.currentGame.bench2.Add(this.plStat);
+                }
+            }
+        }
+
         return true;
+    }
+
+    public void CheckRoundEnd()
+    {
+        // move to bench
+        int winningTeam = GameManager.instance.currentGame.CheckForEndRound();
+        if(winningTeam > 0)
+        {
+            GameManager.instance.currentGame.EndRound(winningTeam);
+        }
     }
 
     public void BallCaught(Ball ball)
     {
+        // dying from opponent catching ball
         ReceiveHit(null);
+    }
+
+    public void TakeOffBench()
+    {
+        SetPlayerState(PlayerState.Idle);
+        rigidbody2D.simulated = true;
+        GetComponent<Animator>().SetTrigger("OffBench");
+
+        if (plStat.Team == 1)
+        {
+            GameManager.instance.currentGame.bench1.Remove(this.plStat);
+        }
+        else if (plStat.Team == 2)
+        {
+            GameManager.instance.currentGame.bench2.Remove(this.plStat);
+        }
     }
 
     public void SetPlayerPosition(Vector3 playerPosition)
@@ -450,6 +521,15 @@ public class PlayerController : MonoBehaviour
         GetComponent<Animator>().SetTrigger("Respawn");
         rigidbody2D.simulated = true;
         timeOfRespawn = Time.time;
+    }
+
+    public void RespawnPlayerOnBench()
+    {
+        SetPlayerState(PlayerState.OnBench);
+        GetComponent<Animator>().SetTrigger("Bench");
+        //rigidbody2D.simulated = true;
+        Vector2 bPos = GameManager.instance.GetBenchPosition(plStat.Team);
+        transform.position = new Vector3(bPos.x, bPos.y, transform.position.z);
     }
 
     public void SetPlayerState(PlayerState ps)
@@ -483,6 +563,23 @@ public class PlayerController : MonoBehaviour
                     {
                         //caught ball thrown by other team
                         ball.lastThrownBy.playerController.BallCaught(ball);
+                        if(plStat.Team == 1)
+                        {
+                            if(GameManager.instance.currentGame.bench1.Count > 0)
+                            {
+                                GameManager.instance.currentGame.bench1[0].playerController.TakeOffBench();
+                            }
+                        }
+                        else if (plStat.Team == 2)
+                        {
+                            if (GameManager.instance.currentGame.bench2.Count > 0)
+                            {
+                                GameManager.instance.currentGame.bench2[0].playerController.TakeOffBench();
+                            }
+                        }
+
+                        Debug.Log("Player " + plStat.controllerId + " caught the ball of Player " + ball.lastThrownBy.controllerId);
+
                     }
                 }
 

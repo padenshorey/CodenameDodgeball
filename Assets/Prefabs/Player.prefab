@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4527771366148050}
   - component: {fileID: 96181435356972154}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 222971284899226012}
   - component: {fileID: 114046757670507342}
   - component: {fileID: 114582375804394362}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: FillUpBG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 224341933705420228}
   - component: {fileID: 222205084624321780}
   - component: {fileID: 114746135923503236}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: Ball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 224563733370802038}
   - component: {fileID: 222965383932888476}
   - component: {fileID: 114341108156080670}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,7 +91,7 @@ GameObject:
   - component: {fileID: 114072177469942874}
   - component: {fileID: 114729834085271114}
   - component: {fileID: 95393012634277954}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: QuickThrow3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -112,7 +112,7 @@ GameObject:
   - component: {fileID: 114925745356276940}
   - component: {fileID: 95513832908481288}
   - component: {fileID: 82973860606284676}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -129,7 +129,7 @@ GameObject:
   - component: {fileID: 224665443603099162}
   - component: {fileID: 222596141412495664}
   - component: {fileID: 114941742188539972}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: Ball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 224251744454549426}
   - component: {fileID: 222756751900914002}
   - component: {fileID: 114211006206105352}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -162,7 +162,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4336428528261940}
   - component: {fileID: 212445000691869868}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: RightHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 224533957724888528}
   - component: {fileID: 222326391561162590}
   - component: {fileID: 114154780184596432}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: Ball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -196,7 +196,7 @@ GameObject:
   - component: {fileID: 4074607980803368}
   - component: {fileID: 58775714602288268}
   - component: {fileID: 114677483935259386}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BorderCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -213,7 +213,7 @@ GameObject:
   - component: {fileID: 224517843132207520}
   - component: {fileID: 222641130321396228}
   - component: {fileID: 114038652036788732}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -230,7 +230,7 @@ GameObject:
   - component: {fileID: 224563598576003788}
   - component: {fileID: 222074584826425190}
   - component: {fileID: 114363579620280688}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: FillUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -249,7 +249,7 @@ GameObject:
   - component: {fileID: 114329975114110480}
   - component: {fileID: 114686673990379718}
   - component: {fileID: 95529470204554984}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: QuickThrow2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -265,7 +265,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4978218982153622}
   - component: {fileID: 212715970779136380}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -284,7 +284,7 @@ GameObject:
   - component: {fileID: 114062567413485040}
   - component: {fileID: 114932023052537006}
   - component: {fileID: 95259947146391822}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: QuickThrow1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -300,7 +300,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4205432377579200}
   - component: {fileID: 212990844975321110}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -316,7 +316,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4335759187178036}
   - component: {fileID: 212896088086465530}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: LeftHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -334,7 +334,7 @@ GameObject:
   - component: {fileID: 223870374034322262}
   - component: {fileID: 114430862028027432}
   - component: {fileID: 114009915150582656}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -350,7 +350,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4820654910439410}
   - component: {fileID: 212213525407621510}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1194,6 +1194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isRealPlayer: 1
+  plStat: {fileID: 0}
   characterPlayer: {fileID: 4820654910439410}
   ballInZone: []
   leftHand: {fileID: 4335759187178036}

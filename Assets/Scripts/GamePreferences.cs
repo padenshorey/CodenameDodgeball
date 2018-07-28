@@ -8,6 +8,7 @@ public class GamePreferences :MonoBehaviour
     public List<Color> team2Colors = new List<Color>();
 
     public float lobbyRespawnTime;
+    public float gameRespawnTime = 1f;
 
     public float respawnInvulnerabilityPeriod = 1f;
 

@@ -37,6 +37,10 @@ public class GameManager : MonoBehaviour
     public Transform team2SpawnEnd;
     public Transform ballSpawnEnd;
 
+    public Transform team1Bench;
+    public Transform team2Bench;
+
+    public Scoreboard scoreboard;
 
     public Ball ballPrefab;
 
@@ -258,5 +262,19 @@ public class GameManager : MonoBehaviour
             team2.Remove(pStat);
             return;
         }
+    }
+
+    public Vector2 GetBenchPosition(int team)
+    {
+        Vector2 bPos = new Vector2(0f, 0f);
+        if(team == 1)
+        {
+            bPos = new Vector2(team1Bench.position.x - Random.Range(0f, 3f), team1Bench.position.y);
+        }
+        else if (team == 2)
+        {
+            bPos = new Vector2(team2Bench.position.x + Random.Range(0f, 3f), team2Bench.position.y);
+        }
+        return bPos;
     }
 }

@@ -45,6 +45,6 @@ public class DodgeballRound {
 
     public void EndRound(int winningTeam)
     {
-        _dbGame.EndRound(winningTeam);
+        
     }
 }
